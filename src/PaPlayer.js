@@ -1,13 +1,13 @@
-console.log("\n %c DPlayer 1.1.2 %c http://dplayer.js.org \n\n","color: #fadfa3; background: #030307; padding:5px 0;","background: #fadfa3; padding:5px 0;");
+// console.log("\n %c PaPlayer 1.1.2 %c  \n\n","color: #fadfa3; background: #030307; padding:5px 0;","background: #fadfa3; padding:5px 0;");
 
-require('./DPlayer.scss');
+require('./PaPlayer.scss');
 const defaultApiBackend = require('./api.js');
 
 let index = 0;
 
-class DPlayer {
+class PaPlayer {
     /**
-     * DPlayer constructor function
+     * PaPlayer constructor function
      *
      * @param {Object} option - See README
      * @constructor
@@ -32,8 +32,8 @@ class DPlayer {
         this.getSVG = (type) => {
             return `
                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" height="100%" version="1.1" viewBox="${svg[type][0]}" width="100%">
-                    <use xlink:href="#dplayer-${type}"></use>
-                    <path class="dplayer-fill" d="${svg[type][1]}" id="dplayer-${type}"></path>
+                    <use xlink:href="#paplayer-${type}"></use>
+                    <path class="paplayer-fill" d="${svg[type][1]}" id="paplayer-${type}"></path>
                 </svg>
             `;
         };
@@ -48,7 +48,7 @@ class DPlayer {
 
         // default options
         const defaultOption = {
-            element: document.getElementsByClassName('dplayer')[0],
+            element: document.getElementsByClassName('paplayer')[0],
             autoplay: false,
             theme: '#b7daff',
             loop: false,
@@ -71,8 +71,8 @@ class DPlayer {
             'Rolling': '滚动',
             'Input danmaku, hit Enter': '输入弹幕，回车发送',
             'About author': '关于作者',
-            'DPlayer feedback': '播放器意见反馈',
-            'About DPlayer': '关于 DPlay 播放器',
+            'PaPlayer feedback': '播放器意见反馈',
+            'About PaPlayer': '关于 PaPlayer',
             'Loop': '洗脑循环',
             'Speed': '速度',
             'Opacity for danmaku': '弹幕透明度',
@@ -104,7 +104,7 @@ class DPlayer {
             bar[type + 'Bar'].style[direction] = percentage * 100 + '%';
         };
 
-        // define DPlayer events
+        // define PaPlayer events
         const eventTypes = ['play', 'pause', 'canplay', 'playing', 'ended', 'error'];
         this.event = {};
         for (let i = 0; i < eventTypes.length; i++) {
@@ -118,19 +118,19 @@ class DPlayer {
 
         this.element = this.option.element;
         if (!this.option.danmaku) {
-            this.element.classList.add('dplayer-no-danmaku');
+            this.element.classList.add('paplayer-no-danmaku');
         }
 
         this.element.innerHTML = `
-            <div class="dplayer-mask"></div>
-            <div class="dplayer-video-wrap">
-                <video class="dplayer-video" ${this.option.video.pic ? `poster="${this.option.video.pic}"` : ``} webkit-playsinline ${this.option.screenshot ? `crossorigin="anonymous"` : ``} preload="${this.option.preload}" src="${this.option.video.url}"></video>
-                <div class="dplayer-danmaku">
-                    <div class="dplayer-danmaku-item dplayer-danmaku-item--demo"></div>
+            <div class="paplayer-mask"></div>
+            <div class="paplayer-video-wrap">
+                <video class="paplayer-video" ${this.option.video.pic ? `poster="${this.option.video.pic}"` : ``} webkit-playsinline ${this.option.screenshot ? `crossorigin="anonymous"` : ``} preload="${this.option.preload}" src="${this.option.video.url}"></video>
+                <div class="paplayer-danmaku">
+                    <div class="paplayer-danmaku-item paplayer-danmaku-item--demo"></div>
                 </div>
-                <div class="dplayer-bezel">
-                    <span class="dplayer-bezel-icon"></span>
-                    ${this.option.danmaku ? `<span class="dplayer-danloading">${getTran('Danmaku is loading')}</span>` : ``}
+                <div class="paplayer-bezel">
+                    <span class="paplayer-bezel-icon"></span>
+                    ${this.option.danmaku ? `<span class="paplayer-danloading">${getTran('Danmaku is loading')}</span>` : ``}
                     <span class="diplayer-loading-icon">
                         <svg height="100%" version="1.1" viewBox="0 0 22 22" width="100%">
                             <svg x="7" y="1">
@@ -161,113 +161,113 @@ class DPlayer {
                     </span>
                 </div>
             </div>
-            <div class="dplayer-controller-mask"></div>
-            <div class="dplayer-controller">
-                <div class="dplayer-icons dplayer-icons-left">
-                    <button class="dplayer-icon dplayer-play-icon">`
+            <div class="paplayer-controller-mask"></div>
+            <div class="paplayer-controller">
+                <div class="paplayer-icons paplayer-icons-left">
+                    <button class="paplayer-icon paplayer-play-icon">`
             +           this.getSVG('play')
             + `     </button>
-                    <div class="dplayer-volume" ${isMobile ? 'style="display: none;"' : ''}>
-                        <button class="dplayer-icon dplayer-volume-icon">`
+                    <div class="paplayer-volume" ${isMobile ? 'style="display: none;"' : ''}>
+                        <button class="paplayer-icon paplayer-volume-icon">`
             +               this.getSVG('volume-down')
             + `         </button>
-                        <div class="dplayer-volume-bar-wrap">
-                            <div class="dplayer-volume-bar">
-                                <div class="dplayer-volume-bar-inner" style="width: 70%; background: ${this.option.theme};">
-                                    <span class="dplayer-thumb" style="background: ${this.option.theme}"></span>
+                        <div class="paplayer-volume-bar-wrap">
+                            <div class="paplayer-volume-bar">
+                                <div class="paplayer-volume-bar-inner" style="width: 70%; background: ${this.option.theme};">
+                                    <span class="paplayer-thumb" style="background: ${this.option.theme}"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <span class="dplayer-time"><span class="dplayer-ptime">0:00</span> / <span class="dplayer-dtime">0:00</span></span>
+                    <span class="paplayer-time"><span class="paplayer-ptime">0:00</span> / <span class="paplayer-dtime">0:00</span></span>
                 </div>
-                <div class="dplayer-icons dplayer-icons-right">
+                <div class="paplayer-icons paplayer-icons-right">
                     ${this.option.screenshot ? `
-                    <a href="#" class="dplayer-icon dplayer-camera-icon" ${isMobile ? 'style="display: none;"' : ''}dplayer-volume>`
-            +           this.getSVG('camera')
-            + `     </a>
+                    <a href="#" class="paplayer-icon paplayer-camera-icon" ${isMobile ? 'style="display: none;"' : ''}paplayer-volume>`
+                +           this.getSVG('camera')
+                + `     </a>
                     ` : ``}
-                    <div class="dplayer-comment">
-                        <button class="dplayer-icon dplayer-comment-icon">`
+                    <div class="paplayer-comment">
+                        <button class="paplayer-icon paplayer-comment-icon">`
             +               this.getSVG('comment')
             + `         </button>
-                        <div class="dplayer-comment-box">
-                            <button class="dplayer-icon dplayer-comment-setting-icon">`
+                        <div class="paplayer-comment-box">
+                            <button class="paplayer-icon paplayer-comment-setting-icon">`
             +                   this.getSVG('menu')
             + `             </button>
-                            <div class="dplayer-comment-setting-box">
-                                <div class="dplayer-comment-setting-color">
-                                   <div class="dplayer-comment-setting-title">${getTran('Set danmaku color')}</div>
+                            <div class="paplayer-comment-setting-box">
+                                <div class="paplayer-comment-setting-color">
+                                   <div class="paplayer-comment-setting-title">${getTran('Set danmaku color')}</div>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-color-${index}" value="#fff" checked>
+                                        <input type="radio" name="paplayer-danmaku-color-${index}" value="#fff" checked>
                                         <span style="background: #fff; border: 1px solid rgba(0,0,0,.1);"></span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-color-${index}" value="#e54256">
+                                        <input type="radio" name="paplayer-danmaku-color-${index}" value="#e54256">
                                         <span style="background: #e54256"></span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-color-${index}" value="#ffe133">
+                                        <input type="radio" name="paplayer-danmaku-color-${index}" value="#ffe133">
                                         <span style="background: #ffe133"></span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-color-${index}" value="#64DD17">
+                                        <input type="radio" name="paplayer-danmaku-color-${index}" value="#64DD17">
                                         <span style="background: #64DD17"></span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-color-${index}" value="#39ccff">
+                                        <input type="radio" name="paplayer-danmaku-color-${index}" value="#39ccff">
                                         <span style="background: #39ccff"></span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-color-${index}" value="#D500F9">
+                                        <input type="radio" name="paplayer-danmaku-color-${index}" value="#D500F9">
                                         <span style="background: #D500F9"></span>
                                     </label>
                                 </div>
-                                <div class="dplayer-comment-setting-type">
-                                    <div class="dplayer-comment-setting-title">${getTran('Set danmaku type')}</div>
+                                <div class="paplayer-comment-setting-type">
+                                    <div class="paplayer-comment-setting-title">${getTran('Set danmaku type')}</div>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-type-${index}" value="top">
+                                        <input type="radio" name="paplayer-danmaku-type-${index}" value="top">
                                         <span>${getTran('Top')}</span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-type-${index}" value="right" checked>
+                                        <input type="radio" name="paplayer-danmaku-type-${index}" value="right" checked>
                                         <span>${getTran('Rolling')}</span>
                                     </label>
                                     <label>
-                                        <input type="radio" name="dplayer-danmaku-type-${index}" value="bottom">
+                                        <input type="radio" name="paplayer-danmaku-type-${index}" value="bottom">
                                         <span>${getTran('Bottom')}</span>
                                     </label>
                                 </div>
                             </div>
-                            <input class="dplayer-comment-input" type="text" placeholder="${getTran('Input danmaku, hit Enter')}" maxlength="30">
-                            <button class="dplayer-icon dplayer-send-icon">`
+                            <input class="paplayer-comment-input" type="text" placeholder="${getTran('Input danmaku, hit Enter')}" maxlength="30">
+                            <button class="paplayer-icon paplayer-send-icon">`
             +                   this.getSVG('send')
             + `             </button>
                         </div>
                     </div>
-                    <div class="dplayer-setting">
-                        <button class="dplayer-icon dplayer-setting-icon">`
+                    <div class="paplayer-setting">
+                        <button class="paplayer-icon paplayer-setting-icon">`
             +               this.getSVG('setting')
             + `         </button>
-                        <div class="dplayer-setting-box"></div>
+                        <div class="paplayer-setting-box"></div>
                     </div>
-                    <button class="dplayer-icon dplayer-full-icon">`
+                    <button class="paplayer-icon paplayer-full-icon">`
             +           this.getSVG('full')
             + `     </button>
                 </div>
-                <div class="dplayer-bar-wrap">
-                    <div class="dplayer-bar">
-                        <div class="dplayer-loaded" style="width: 0;"></div>
-                        <div class="dplayer-played" style="width: 0; background: ${this.option.theme}">
-                            <span class="dplayer-thumb" style="background: ${this.option.theme}"></span>
+                <div class="paplayer-bar-wrap">
+                    <div class="paplayer-bar">
+                        <div class="paplayer-loaded" style="width: 0;"></div>
+                        <div class="paplayer-played" style="width: 0; background: ${this.option.theme}">
+                            <span class="paplayer-thumb" style="background: ${this.option.theme}"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="dplayer-menu">
-                <div class="dplayer-menu-item"><span class="dplayer-menu-label"><a target="_blank" href="http://diygod.me/">${getTran('About author')}</a></span></div>
-                <div class="dplayer-menu-item"><span class="dplayer-menu-label"><a target="_blank" href="https://github.com/DIYgod/DPlayer/issues">${getTran('DPlayer feedback')}</a></span></div>
-                <div class="dplayer-menu-item"><span class="dplayer-menu-label"><a target="_blank" href="https://github.com/DIYgod/DPlayer">${getTran('About DPlayer')}</a></span></div>
+            <div class="paplayer-menu">
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="http://www.baidu.com/">${getTran('About author')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.baidu.com/">${getTran('PaPlayer feedback')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.baidu.com/">${getTran('About PaPlayer')}</a></span></div>
             </div>
         `;
 
@@ -275,50 +275,30 @@ class DPlayer {
         var arrow = this.element.offsetWidth <= 500;
         if (arrow) {
             var arrowStyle = document.createElement('style');
-            arrowStyle.innerHTML = `.dplayer .dplayer-danmaku{font-size:18px}`;
+            arrowStyle.innerHTML = `.paplayer .paplayer-danmaku{font-size:18px}`;
             document.head.appendChild(arrowStyle);
         }
 
         // get this video object
-        this.video = this.element.getElementsByClassName('dplayer-video')[0];
+        this.video = this.element.getElementsByClassName('paplayer-video')[0];
 
-        // Support HTTP Live Streaming
-        if (/(m3u8\?|m3u8$)/i.exec(this.option.video.url) && Hls.isSupported()) {
-            this.element.getElementsByClassName('dplayer-time')[0].style.display = 'none';
-            const hls = new Hls();
-            hls.attachMedia(this.video);
-            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                hls.loadSource(this.option.video.url);
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                    console.log("manifest loaded, found " + data.levels.length + " quality level");
-                });
-            });
-        }
+        // try other supported media type
+        this.TestMediaType();
 
-        // Support FLV
-        if (/(flv\?|flv$)/i.exec(this.option.video.url) && flvjs.isSupported()) {
-            const flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                url: this.option.video.url
-            });
-            flvPlayer.attachMediaElement(this.video);
-            flvPlayer.load();
-        }
-
-        this.bezel = this.element.getElementsByClassName('dplayer-bezel-icon')[0];
+        this.bezel = this.element.getElementsByClassName('paplayer-bezel-icon')[0];
         this.bezel.addEventListener('animationend', () => {
-            this.bezel.classList.remove('dplayer-bezel-transition');
+            this.bezel.classList.remove('paplayer-bezel-transition');
         });
 
         // play and pause button
-        this.playButton = this.element.getElementsByClassName('dplayer-play-icon')[0];
+        this.playButton = this.element.getElementsByClassName('paplayer-play-icon')[0];
         this.shouldpause = true;
         this.playButton.addEventListener('click', () => {
             this.toggle();
         });
 
-        const videoWrap = this.element.getElementsByClassName('dplayer-video-wrap')[0];
-        const conMask = this.element.getElementsByClassName('dplayer-controller-mask')[0];
+        const videoWrap = this.element.getElementsByClassName('paplayer-video-wrap')[0];
+        const conMask = this.element.getElementsByClassName('paplayer-controller-mask')[0];
         if (!isMobile) {
             videoWrap.addEventListener('click', () => {
                 this.toggle();
@@ -329,11 +309,11 @@ class DPlayer {
         }
         else {
             const toggleController = () => {
-                if (this.element.classList.contains('dplayer-hide-controller')) {
-                    this.element.classList.remove('dplayer-hide-controller');
+                if (this.element.classList.contains('paplayer-hide-controller')) {
+                    this.element.classList.remove('paplayer-hide-controller');
                 }
                 else {
-                    this.element.classList.add('dplayer-hide-controller');
+                    this.element.classList.add('paplayer-hide-controller');
                 }
             };
             videoWrap.addEventListener('click', toggleController);
@@ -359,26 +339,26 @@ class DPlayer {
         /**
          * control play progress
          */
-        // get element's view position
+            // get element's view position
         const getElementViewLeft = (element) => {
-            let actualLeft = element.offsetLeft;
-            let current = element.offsetParent;
-            let elementScrollLeft;
-            if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
-                while (current !== null) {
-                    actualLeft += current.offsetLeft;
-                    current = current.offsetParent;
+                let actualLeft = element.offsetLeft;
+                let current = element.offsetParent;
+                let elementScrollLeft;
+                if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
+                    while (current !== null) {
+                        actualLeft += current.offsetLeft;
+                        current = current.offsetParent;
+                    }
                 }
-            }
-            else {
-                while (current !== null && current !== this.element) {
-                    actualLeft += current.offsetLeft;
-                    current = current.offsetParent;
+                else {
+                    while (current !== null && current !== this.element) {
+                        actualLeft += current.offsetLeft;
+                        current = current.offsetParent;
+                    }
                 }
-            }
-            elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
-            return actualLeft - elementScrollLeft;
-        };
+                elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
+                return actualLeft - elementScrollLeft;
+            };
 
         const getElementViewTop = (element) => {
             let actualTop = element.offsetTop;
@@ -401,9 +381,9 @@ class DPlayer {
         };
 
         let bar = {};
-        bar.playedBar = this.element.getElementsByClassName('dplayer-played')[0];
-        bar.loadedBar = this.element.getElementsByClassName('dplayer-loaded')[0];
-        const pbar = this.element.getElementsByClassName('dplayer-bar-wrap')[0];
+        bar.playedBar = this.element.getElementsByClassName('paplayer-played')[0];
+        bar.loadedBar = this.element.getElementsByClassName('paplayer-loaded')[0];
+        const pbar = this.element.getElementsByClassName('paplayer-bar-wrap')[0];
         let barWidth;
 
         if (this.option.danmaku) {
@@ -429,19 +409,19 @@ class DPlayer {
                 if (!bufferingDetected
                     && currentPlayPos < (lastPlayPos + 0.01)
                     && !this.video.paused) {
-                    this.element.classList.add('dplayer-loading');
+                    this.element.classList.add('paplayer-loading');
                     bufferingDetected = true;
                 }
                 if (bufferingDetected
                     && currentPlayPos > (lastPlayPos + 0.01)
                     && !this.video.paused) {
-                    this.element.classList.remove('dplayer-loading');
+                    this.element.classList.remove('paplayer-loading');
                     bufferingDetected = false;
                 }
                 lastPlayPos = currentPlayPos;
 
                 this.updateBar('played', this.video.currentTime / this.video.duration, 'width');
-                this.element.getElementsByClassName('dplayer-ptime')[0].innerHTML = secondToTime(this.video.currentTime);
+                this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = secondToTime(this.video.currentTime);
                 this.trigger('playing');
             }, 100);
             if (this.option.danmaku && showdan) {
@@ -477,7 +457,7 @@ class DPlayer {
             percentage = percentage > 0 ? percentage : 0;
             percentage = percentage < 1 ? percentage : 1;
             this.updateBar('played', percentage, 'width');
-            this.element.getElementsByClassName('dplayer-ptime')[0].innerHTML = secondToTime(percentage * this.video.duration);
+            this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = secondToTime(percentage * this.video.duration);
         };
 
         const thumbUp = () => {
@@ -498,15 +478,15 @@ class DPlayer {
         /**
          * control volume
          */
-        bar.volumeBar = this.element.getElementsByClassName('dplayer-volume-bar-inner')[0];
-        const volumeEle = this.element.getElementsByClassName('dplayer-volume')[0];
-        const volumeBarWrapWrap = this.element.getElementsByClassName('dplayer-volume-bar-wrap')[0];
-        const volumeBarWrap = this.element.getElementsByClassName('dplayer-volume-bar')[0];
-        const volumeicon = this.element.getElementsByClassName('dplayer-volume-icon')[0];
+        bar.volumeBar = this.element.getElementsByClassName('paplayer-volume-bar-inner')[0];
+        const volumeEle = this.element.getElementsByClassName('paplayer-volume')[0];
+        const volumeBarWrapWrap = this.element.getElementsByClassName('paplayer-volume-bar-wrap')[0];
+        const volumeBarWrap = this.element.getElementsByClassName('paplayer-volume-bar')[0];
+        const volumeicon = this.element.getElementsByClassName('paplayer-volume-icon')[0];
         const vWidth = 35;
 
         this.switchVolumeIcon = () => {
-            const volumeicon = this.element.getElementsByClassName('dplayer-volume-icon')[0];
+            const volumeicon = this.element.getElementsByClassName('paplayer-volume-icon')[0];
             if (this.video.volume >= 0.8) {
                 volumeicon.innerHTML = this.getSVG('volume-up');
             }
@@ -525,7 +505,7 @@ class DPlayer {
         const volumeUp = () => {
             document.removeEventListener('mouseup', volumeUp);
             document.removeEventListener('mousemove', volumeMove);
-            volumeEle.classList.remove('dplayer-volume-active');
+            volumeEle.classList.remove('paplayer-volume-active');
         };
 
         volumeBarWrapWrap.addEventListener('click', (event) => {
@@ -536,7 +516,7 @@ class DPlayer {
         volumeBarWrapWrap.addEventListener('mousedown', () => {
             document.addEventListener('mousemove', volumeMove);
             document.addEventListener('mouseup', volumeUp);
-            volumeEle.classList.add('dplayer-volume-active');
+            volumeEle.classList.add('paplayer-volume-active');
         });
         volumeicon.addEventListener('click', () => {
             if (this.video.muted) {
@@ -558,11 +538,11 @@ class DPlayer {
         let hideTime = 0;
         if (!isMobile) {
             const hideController = () => {
-                this.element.classList.remove('dplayer-hide-controller');
+                this.element.classList.remove('paplayer-hide-controller');
                 clearTimeout(hideTime);
                 hideTime = setTimeout(() => {
                     if (this.video.played.length) {
-                        this.element.classList.add('dplayer-hide-controller');
+                        this.element.classList.add('paplayer-hide-controller');
                         closeSetting();
                         closeComment();
                     }
@@ -576,80 +556,80 @@ class DPlayer {
         /***
          * setting
          */
-        let danOpacity = localStorage.getItem('DPlayer-opacity') || 0.7;
+        let danOpacity = localStorage.getItem('PaPlayer-opacity') || 0.7;
         const settingHTML = {
             'original': `
-                    <div class="dplayer-setting-item dplayer-setting-speed">
-                        <span class="dplayer-label">${getTran('Speed')}</span>
-                        <div class="dplayer-toggle">`
+                    <div class="paplayer-setting-item paplayer-setting-speed">
+                        <span class="paplayer-label">${getTran('Speed')}</span>
+                        <div class="paplayer-toggle">`
             +           this.getSVG('right')
             + `     </div>
                     </div>
-                    <div class="dplayer-setting-item dplayer-setting-loop">
-                        <span class="dplayer-label">${getTran('Loop')}</span>
-                        <div class="dplayer-toggle">
-                            <input class="dplayer-toggle-setting-input" type="checkbox" name="dplayer-toggle">
-                            <label for="dplayer-toggle"></label>
+                    <div class="paplayer-setting-item paplayer-setting-loop">
+                        <span class="paplayer-label">${getTran('Loop')}</span>
+                        <div class="paplayer-toggle">
+                            <input class="paplayer-toggle-setting-input" type="checkbox" name="paplayer-toggle">
+                            <label for="paplayer-toggle"></label>
                         </div>
                     </div>
-                    <div class="dplayer-setting-item dplayer-setting-showdan">
-                        <span class="dplayer-label">${getTran('Danmaku')}</span>
-                        <div class="dplayer-toggle">
-                            <input class="dplayer-showdan-setting-input" type="checkbox" name="dplayer-toggle-dan">
-                            <label for="dplayer-toggle-dan"></label>
+                    <div class="paplayer-setting-item paplayer-setting-showdan">
+                        <span class="paplayer-label">${getTran('Danmaku')}</span>
+                        <div class="paplayer-toggle">
+                            <input class="paplayer-showdan-setting-input" type="checkbox" name="paplayer-toggle-dan">
+                            <label for="paplayer-toggle-dan"></label>
                         </div>
                     </div>
-                    <div class="dplayer-setting-item dplayer-setting-danmaku">
-                        <span class="dplayer-label">${getTran('Opacity for danmaku')}</span>
-                        <div class="dplayer-danmaku-bar-wrap">
-                            <div class="dplayer-danmaku-bar">
-                                <div class="dplayer-danmaku-bar-inner" style="width: ${danOpacity * 100}%">
-                                    <span class="dplayer-thumb"></span>
+                    <div class="paplayer-setting-item paplayer-setting-danmaku">
+                        <span class="paplayer-label">${getTran('Opacity for danmaku')}</span>
+                        <div class="paplayer-danmaku-bar-wrap">
+                            <div class="paplayer-danmaku-bar">
+                                <div class="paplayer-danmaku-bar-inner" style="width: ${danOpacity * 100}%">
+                                    <span class="paplayer-thumb"></span>
                                 </div>
                             </div>
                         </div>
                     </div>`,
             'speed': `
-                    <div class="dplayer-setting-speed-item" data-speed="0.5">
-                        <span class="dplayer-label">0.5</span>
+                    <div class="paplayer-setting-speed-item" data-speed="0.5">
+                        <span class="paplayer-label">0.5</span>
                     </div>
-                    <div class="dplayer-setting-speed-item" data-speed="0.75">
-                        <span class="dplayer-label">0.75</span>
+                    <div class="paplayer-setting-speed-item" data-speed="0.75">
+                        <span class="paplayer-label">0.75</span>
                     </div>
-                    <div class="dplayer-setting-speed-item" data-speed="1">
-                        <span class="dplayer-label">${getTran('Normal')}</span>
+                    <div class="paplayer-setting-speed-item" data-speed="1">
+                        <span class="paplayer-label">${getTran('Normal')}</span>
                     </div>
-                    <div class="dplayer-setting-speed-item" data-speed="1.25">
-                        <span class="dplayer-label">1.25</span>
+                    <div class="paplayer-setting-speed-item" data-speed="1.25">
+                        <span class="paplayer-label">1.25</span>
                     </div>
-                    <div class="dplayer-setting-speed-item" data-speed="1.5">
-                        <span class="dplayer-label">1.5</span>
+                    <div class="paplayer-setting-speed-item" data-speed="1.5">
+                        <span class="paplayer-label">1.5</span>
                     </div>
-                    <div class="dplayer-setting-speed-item" data-speed="2">
-                        <span class="dplayer-label">2</span>
+                    <div class="paplayer-setting-speed-item" data-speed="2">
+                        <span class="paplayer-label">2</span>
                     </div>`
         };
 
         // toggle setting box
-        const settingIcon = this.element.getElementsByClassName('dplayer-setting-icon')[0];
-        const settingBox = this.element.getElementsByClassName('dplayer-setting-box')[0];
-        const mask = this.element.getElementsByClassName('dplayer-mask')[0];
+        const settingIcon = this.element.getElementsByClassName('paplayer-setting-icon')[0];
+        const settingBox = this.element.getElementsByClassName('paplayer-setting-box')[0];
+        const mask = this.element.getElementsByClassName('paplayer-mask')[0];
         settingBox.innerHTML = settingHTML.original;
 
         const closeSetting = () => {
-            if (settingBox.classList.contains('dplayer-setting-box-open')) {
-                settingBox.classList.remove('dplayer-setting-box-open');
-                mask.classList.remove('dplayer-mask-show');
+            if (settingBox.classList.contains('paplayer-setting-box-open')) {
+                settingBox.classList.remove('paplayer-setting-box-open');
+                mask.classList.remove('paplayer-mask-show');
                 setTimeout(() => {
-                    settingBox.classList.remove('dplayer-setting-box-narrow');
+                    settingBox.classList.remove('paplayer-setting-box-narrow');
                     settingBox.innerHTML = settingHTML.original;
                     settingEvent();
                 }, 300);
             }
         };
         const openSetting = () => {
-            settingBox.classList.add('dplayer-setting-box-open');
-            mask.classList.add('dplayer-mask-show');
+            settingBox.classList.add('paplayer-setting-box-open');
+            mask.classList.add('paplayer-mask-show');
         };
 
         mask.addEventListener('click', () => {
@@ -660,12 +640,12 @@ class DPlayer {
         });
 
         let loop = this.option.loop;
-        const danContainer = this.element.getElementsByClassName('dplayer-danmaku')[0];
+        const danContainer = this.element.getElementsByClassName('paplayer-danmaku')[0];
         let showdan = true;
         const settingEvent = () => {
             // loop control
-            const loopEle = this.element.getElementsByClassName('dplayer-setting-loop')[0];
-            const loopToggle = loopEle.getElementsByClassName('dplayer-toggle-setting-input')[0];
+            const loopEle = this.element.getElementsByClassName('paplayer-setting-loop')[0];
+            const loopToggle = loopEle.getElementsByClassName('paplayer-toggle-setting-input')[0];
 
             loopToggle.checked = loop;
 
@@ -683,8 +663,8 @@ class DPlayer {
             });
 
             // show danmaku control
-            const showDanEle = this.element.getElementsByClassName('dplayer-setting-showdan')[0];
-            const showDanToggle = showDanEle.getElementsByClassName('dplayer-showdan-setting-input')[0];
+            const showDanEle = this.element.getElementsByClassName('paplayer-setting-showdan')[0];
+            const showDanToggle = showDanEle.getElementsByClassName('paplayer-showdan-setting-input')[0];
 
             showDanToggle.checked = showdan;
 
@@ -713,25 +693,25 @@ class DPlayer {
                     showdan = false;
                     if (this.option.danmaku) {
                         clearInterval(danmakuTime);
-                        danContainer.innerHTML = `<div class="dplayer-danmaku-item  dplayer-danmaku-item--demo"></div>`;
+                        danContainer.innerHTML = `<div class="paplayer-danmaku-item  paplayer-danmaku-item--demo"></div>`;
                         this.danTunnel = {
                             right: {},
                             top: {},
                             bottom: {}
                         };
-                        this.itemDemo = this.element.getElementsByClassName('dplayer-danmaku-item')[0];
+                        this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
                     }
                 }
                 closeSetting();
             });
 
             // speed control
-            const speedEle = this.element.getElementsByClassName('dplayer-setting-speed')[0];
+            const speedEle = this.element.getElementsByClassName('paplayer-setting-speed')[0];
             speedEle.addEventListener('click', () => {
-                settingBox.classList.add('dplayer-setting-box-narrow');
+                settingBox.classList.add('paplayer-setting-box-narrow');
                 settingBox.innerHTML = settingHTML.speed;
 
-                const speedItem = settingBox.getElementsByClassName('dplayer-setting-speed-item');
+                const speedItem = settingBox.getElementsByClassName('paplayer-setting-speed-item');
                 for (let i = 0; i < speedItem.length; i++) {
                     speedItem[i].addEventListener('click', () => {
                         this.video.playbackRate = speedItem[i].dataset.speed;
@@ -742,10 +722,10 @@ class DPlayer {
 
             if (this.option.danmaku) {
                 // danmaku opacity
-                bar.danmakuBar = this.element.getElementsByClassName('dplayer-danmaku-bar-inner')[0];
-                const danmakuBarWrapWrap = this.element.getElementsByClassName('dplayer-danmaku-bar-wrap')[0];
-                const danmakuBarWrap = this.element.getElementsByClassName('dplayer-danmaku-bar')[0];
-                const danmakuSettingBox = this.element.getElementsByClassName('dplayer-setting-danmaku')[0];
+                bar.danmakuBar = this.element.getElementsByClassName('paplayer-danmaku-bar-inner')[0];
+                const danmakuBarWrapWrap = this.element.getElementsByClassName('paplayer-danmaku-bar-wrap')[0];
+                const danmakuBarWrap = this.element.getElementsByClassName('paplayer-danmaku-bar')[0];
+                const danmakuSettingBox = this.element.getElementsByClassName('paplayer-setting-danmaku')[0];
                 const dWidth = 130;
                 this.updateBar('danmaku', danOpacity, 'width');
 
@@ -755,17 +735,17 @@ class DPlayer {
                     percentage = percentage > 0 ? percentage : 0;
                     percentage = percentage < 1 ? percentage : 1;
                     this.updateBar('danmaku', percentage, 'width');
-                    const items = this.element.getElementsByClassName('dplayer-danmaku-item');
+                    const items = this.element.getElementsByClassName('paplayer-danmaku-item');
                     for (let i = 0; i < items.length; i++) {
                         items[i].style.opacity = percentage;
                     }
                     danOpacity = percentage;
-                    localStorage.setItem('DPlayer-opacity', danOpacity);
+                    localStorage.setItem('PaPlayer-opacity', danOpacity);
                 };
                 const danmakuUp = () => {
                     document.removeEventListener('mouseup', danmakuUp);
                     document.removeEventListener('mousemove', danmakuMove);
-                    danmakuSettingBox.classList.remove('dplayer-setting-danmaku-active');
+                    danmakuSettingBox.classList.remove('paplayer-setting-danmaku-active');
                 };
 
                 danmakuBarWrapWrap.addEventListener('click', (event) => {
@@ -774,17 +754,17 @@ class DPlayer {
                     percentage = percentage > 0 ? percentage : 0;
                     percentage = percentage < 1 ? percentage : 1;
                     this.updateBar('danmaku', percentage, 'width');
-                    const items = this.element.getElementsByClassName('dplayer-danmaku-item');
+                    const items = this.element.getElementsByClassName('paplayer-danmaku-item');
                     for (let i = 0; i < items.length; i++) {
                         items[i].style.opacity = percentage;
                     }
                     danOpacity = percentage;
-                    localStorage.setItem('DPlayer-opacity', danOpacity);
+                    localStorage.setItem('PaPlayer-opacity', danOpacity);
                 });
                 danmakuBarWrapWrap.addEventListener('mousedown', () => {
                     document.addEventListener('mousemove', danmakuMove);
                     document.addEventListener('mouseup', danmakuUp);
-                    danmakuSettingBox.classList.add('dplayer-setting-danmaku-active');
+                    danmakuSettingBox.classList.add('paplayer-setting-danmaku-active');
                 });
             }
         };
@@ -797,7 +777,7 @@ class DPlayer {
         // show video time: the metadata has loaded or changed
         this.video.addEventListener('durationchange', () => {
             if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
-                this.element.getElementsByClassName('dplayer-dtime')[0].innerHTML = secondToTime(this.video.duration);
+                this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = secondToTime(this.video.duration);
             }
         });
 
@@ -809,7 +789,7 @@ class DPlayer {
 
         // video download error: an error occurs
         this.video.addEventListener('error', () => {
-            this.element.getElementsByClassName('dplayer-ptime')[0].innerHTML = `Error happens ╥﹏╥`;
+            this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = `Error happens ╥﹏╥`;
             this.trigger('pause');
         });
 
@@ -830,14 +810,14 @@ class DPlayer {
         });
 
         // control volume
-        this.video.volume = parseInt(this.element.getElementsByClassName('dplayer-volume-bar-inner')[0].style.width) / 100;
+        this.video.volume = parseInt(this.element.getElementsByClassName('paplayer-volume-bar-inner')[0].style.width) / 100;
 
         // loop
         this.video.loop = loop;
 
         // set duration time
         if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
-            this.element.getElementsByClassName('dplayer-dtime')[0].innerHTML = this.video.duration ? secondToTime(this.video.duration) : '00:00';
+            this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = this.video.duration ? secondToTime(this.video.duration) : '00:00';
         }
 
 
@@ -892,15 +872,15 @@ class DPlayer {
             }
         };
 
-        this.itemDemo = this.element.getElementsByClassName('dplayer-danmaku-item')[0];
+        this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
 
         const danmakuIn = (text, color, type) => {
             danWidth = danContainer.offsetWidth;
             danHeight = danContainer.offsetHeight;
             itemY = parseInt(danHeight / itemHeight);
             let item = document.createElement(`div`);
-            item.classList.add(`dplayer-danmaku-item`);
-            item.classList.add(`dplayer-danmaku-${type}`);
+            item.classList.add(`paplayer-danmaku-item`);
+            item.classList.add(`paplayer-danmaku-${type}`);
             item.innerHTML = text;
             item.style.opacity = danOpacity;
             item.style.color = color;
@@ -933,7 +913,7 @@ class DPlayer {
             danContainer.appendChild(item);
 
             // move
-            item.classList.add(`dplayer-danmaku-move`);
+            item.classList.add(`paplayer-danmaku-move`);
 
             return item;
         };
@@ -957,12 +937,12 @@ class DPlayer {
         /**
          * comment
          */
-        const commentInput = this.element.getElementsByClassName('dplayer-comment-input')[0];
-        const commentIcon = this.element.getElementsByClassName('dplayer-comment-icon')[0];
-        const commentBox = this.element.getElementsByClassName('dplayer-comment-box')[0];
-        const commentSettingIcon = this.element.getElementsByClassName('dplayer-comment-setting-icon')[0];
-        const commentSettingBox = this.element.getElementsByClassName('dplayer-comment-setting-box')[0];
-        const commentSendIcon = this.element.getElementsByClassName('dplayer-send-icon')[0];
+        const commentInput = this.element.getElementsByClassName('paplayer-comment-input')[0];
+        const commentIcon = this.element.getElementsByClassName('paplayer-comment-icon')[0];
+        const commentBox = this.element.getElementsByClassName('paplayer-comment-box')[0];
+        const commentSettingIcon = this.element.getElementsByClassName('paplayer-comment-setting-icon')[0];
+        const commentSettingBox = this.element.getElementsByClassName('paplayer-comment-setting-box')[0];
+        const commentSendIcon = this.element.getElementsByClassName('paplayer-send-icon')[0];
 
         const htmlEncode = (str) => {
             return str.replace(/&/g, "&amp;")
@@ -988,8 +968,8 @@ class DPlayer {
                 author: 'DIYgod',
                 time: this.video.currentTime,
                 text: commentInput.value,
-                color: this.element.querySelector('.dplayer-comment-setting-color input:checked').value,
-                type: this.element.querySelector('.dplayer-comment-setting-type input:checked').value
+                color: this.element.querySelector('.paplayer-comment-setting-color input:checked').value,
+                type: this.element.querySelector('.paplayer-comment-setting-type input:checked').value
             };
             this.option.apiBackend.send(this.option.danmaku.api, danmakuData);
 
@@ -1002,36 +982,36 @@ class DPlayer {
         };
 
         const closeCommentSetting = () => {
-            if (commentSettingBox.classList.contains('dplayer-comment-setting-open')) {
-                commentSettingBox.classList.remove('dplayer-comment-setting-open');
+            if (commentSettingBox.classList.contains('paplayer-comment-setting-open')) {
+                commentSettingBox.classList.remove('paplayer-comment-setting-open');
             }
         };
         const toggleCommentSetting = () => {
-            if (commentSettingBox.classList.contains('dplayer-comment-setting-open')) {
-                commentSettingBox.classList.remove('dplayer-comment-setting-open');
+            if (commentSettingBox.classList.contains('paplayer-comment-setting-open')) {
+                commentSettingBox.classList.remove('paplayer-comment-setting-open');
             }
             else {
-                commentSettingBox.classList.add('dplayer-comment-setting-open');
+                commentSettingBox.classList.add('paplayer-comment-setting-open');
             }
         };
 
         let disableHide = 0;
         const closeComment = () => {
-            if (commentBox.classList.contains('dplayer-comment-box-open')) {
-                commentBox.classList.remove('dplayer-comment-box-open');
-                mask.classList.remove('dplayer-mask-show');
+            if (commentBox.classList.contains('paplayer-comment-box-open')) {
+                commentBox.classList.remove('paplayer-comment-box-open');
+                mask.classList.remove('paplayer-mask-show');
                 clearInterval(disableHide);
-                this.element.classList.remove('dplayer-show-controller');
+                this.element.classList.remove('paplayer-show-controller');
                 closeCommentSetting();
             }
         };
         const openComment = () => {
-            commentBox.classList.add('dplayer-comment-box-open');
-            mask.classList.add('dplayer-mask-show');
+            commentBox.classList.add('paplayer-comment-box-open');
+            mask.classList.add('paplayer-mask-show');
             disableHide = setInterval(() => {
                 clearTimeout(hideTime);
             }, 1000);
-            this.element.classList.add('dplayer-show-controller');
+            this.element.classList.add('paplayer-show-controller');
         };
 
         mask.addEventListener('click', () => {
@@ -1048,10 +1028,10 @@ class DPlayer {
         });
 
         // comment setting box
-        this.element.getElementsByClassName('dplayer-comment-setting-color')[0].addEventListener('click', () => {
-            const sele = this.element.querySelector('input[name="dplayer-danmaku-color-${index}"]:checked+span');
+        this.element.getElementsByClassName('paplayer-comment-setting-color')[0].addEventListener('click', () => {
+            const sele = this.element.querySelector('input[name="paplayer-danmaku-color-${index}"]:checked+span');
             if (sele) {
-                commentSettingIcon.getElementsByClassName('dplayer-fill')[0].style.fill = this.element.querySelector('input[name="dplayer-danmaku-color-${index}"]:checked').value;
+                commentSettingIcon.getElementsByClassName('paplayer-fill')[0].style.fill = this.element.querySelector('input[name="paplayer-danmaku-color-${index}"]:checked').value;
             }
         });
 
@@ -1073,7 +1053,7 @@ class DPlayer {
          */
         const resetAnimation = () => {
             danWidth = danContainer.offsetWidth;
-            const items = this.element.getElementsByClassName('dplayer-danmaku-item');
+            const items = this.element.getElementsByClassName('paplayer-danmaku-item');
             for (let i = 0; i < items.length; i++) {
                 items[i].style.transform = `translateX(-${danWidth}px)`;
             }
@@ -1091,7 +1071,7 @@ class DPlayer {
             resetAnimation();
             console.log(danContainer.offsetHeight);
         });
-        this.element.getElementsByClassName('dplayer-full-icon')[0].addEventListener('click', () => {
+        this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
             if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
                 if (this.element.requestFullscreen) {
                     this.element.requestFullscreen();
@@ -1159,12 +1139,12 @@ class DPlayer {
         /**
          * right key
          */
-        const menu = this.element.getElementsByClassName('dplayer-menu')[0];
+        const menu = this.element.getElementsByClassName('paplayer-menu')[0];
         this.element.addEventListener('contextmenu', (e) => {
             const event = e || window.event;
             event.preventDefault();
 
-            menu.classList.add('dplayer-menu-show');
+            menu.classList.add('paplayer-menu-show');
 
             const clientRect = this.element.getBoundingClientRect();
             const menuLeft = event.clientX - clientRect.left;
@@ -1186,18 +1166,18 @@ class DPlayer {
                 menu.style.bottom = 'initial';
             }
 
-            mask.classList.add('dplayer-mask-show');
+            mask.classList.add('paplayer-mask-show');
             mask.addEventListener('click', () => {
-                mask.classList.remove('dplayer-mask-show');
-                menu.classList.remove('dplayer-menu-show');
-           });
+                mask.classList.remove('paplayer-mask-show');
+                menu.classList.remove('paplayer-menu-show');
+            });
         });
 
         /**
          * Screenshot
          */
         if (this.option.screenshot) {
-            const camareIcon = this.element.getElementsByClassName('dplayer-camera-icon')[0];
+            const camareIcon = this.element.getElementsByClassName('paplayer-camera-icon')[0];
             camareIcon.addEventListener('click', () => {
                 const canvas = document.createElement("canvas");
                 canvas.width = this.video.videoWidth;
@@ -1205,7 +1185,7 @@ class DPlayer {
                 canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
                 camareIcon.href = canvas.toDataURL();
-                camareIcon.download = "DPlayer.png";
+                camareIcon.download = "PaPlayer.png";
             });
         }
 
@@ -1223,7 +1203,7 @@ class DPlayer {
             this.shouldpause = false;
 
             this.bezel.innerHTML = this.getSVG('play');
-            this.bezel.classList.add('dplayer-bezel-transition');
+            this.bezel.classList.add('paplayer-bezel-transition');
 
             this.playButton.innerHTML = this.getSVG('pause');
 
@@ -1232,7 +1212,7 @@ class DPlayer {
                 this.clearTime();
             }
             this.setTime();
-            this.element.classList.add('dplayer-playing');
+            this.element.classList.add('paplayer-playing');
             this.trigger('play');
         }
     }
@@ -1243,16 +1223,16 @@ class DPlayer {
     pause() {
         if (!this.shouldpause || this.ended) {
             this.shouldpause = true;
-            this.element.classList.remove('dplayer-loading');
+            this.element.classList.remove('paplayer-loading');
 
             this.bezel.innerHTML = this.getSVG('pause');
-            this.bezel.classList.add('dplayer-bezel-transition');
+            this.bezel.classList.add('paplayer-bezel-transition');
 
             this.ended = false;
             this.playButton.innerHTML = this.getSVG('play');
             this.video.pause();
             this.clearTime();
-            this.element.classList.remove('dplayer-playing');
+            this.element.classList.remove('paplayer-playing');
             this.trigger('pause');
         }
     }
@@ -1338,7 +1318,7 @@ class DPlayer {
         this._readAllEndpoints(endpoints, (results) => {
             this.danIndex = 0;
             this.dan = [].concat.apply([], results).sort((a, b) => a.time - b.time);
-            this.element.getElementsByClassName('dplayer-danloading')[0].style.display = 'none';
+            this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'none';
 
             // autoplay
             if (this.option.autoplay && !isMobile) {
@@ -1364,21 +1344,52 @@ class DPlayer {
         if (danmaku) {
             this.dan = [];
             this.danIndex = 0;
-            this.element.getElementsByClassName('dplayer-danloading')[0].style.display = 'block';
+            this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'block';
             this.updateBar('played', 0, 'width');
             this.updateBar('loaded', 0, 'width');
-            this.element.getElementsByClassName('dplayer-ptime')[0].innerHTML = '00:00';
-            this.element.getElementsByClassName('dplayer-danmaku')[0].innerHTML = `<div class="dplayer-danmaku-item  dplayer-danmaku-item--demo"></div>`;
+            this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = '00:00';
+            this.element.getElementsByClassName('paplayer-danmaku')[0].innerHTML = `<div class="paplayer-danmaku-item  paplayer-danmaku-item--demo"></div>`;
             this.danTunnel = {
                 right: {},
                 top: {},
                 bottom: {}
             };
-            this.itemDemo = this.element.getElementsByClassName('dplayer-danmaku-item')[0];
+            this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
             this.option.danmaku = danmaku;
             this.readDanmaku();
+        }
+        // also need try media type
+        this.TestMediaType();
+    }
+
+    /**
+     * try other media types
+     * @constructor
+     */
+    TestMediaType(){
+        // Support HTTP Live Streaming
+        if (/(m3u8\?|m3u8$)/i.exec(this.option.video.url) && Hls.isSupported()) {
+            // this.element.getElementsByClassName('paplayer-time')[0].style.display = 'none';
+            const hls = new Hls();
+            hls.attachMedia(this.video);
+            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                hls.loadSource(this.option.video.url);
+                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                    console.log("manifest loaded, found " + data.levels.length + " quality level");
+                });
+            });
+        }
+
+        // Support FLV
+        if (/(flv\?|flv$)/i.exec(this.option.video.url) && flvjs.isSupported()) {
+            const flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: this.option.video.url
+            });
+            flvPlayer.attachMediaElement(this.video);
+            flvPlayer.load();
         }
     }
 }
 
-module.exports = DPlayer;
+module.exports = PaPlayer;

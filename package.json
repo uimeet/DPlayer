@@ -1,15 +1,15 @@
 {
-  "name": "dplayer",
+  "name": "paplayer",
   "version": "1.1.2",
   "description": "Wow, such a lovely HTML5 danmaku video player",
-  "main": "dist/DPlayer.min.js",
+  "main": "dist/PaPlayer.min.js",
   "scripts": {
     "test": "webpack",
     "build": "webpack",
     "dev": "WEBPACK_ENV=dev webpack-dev-server --hot --progress --inline --host 0.0.0.0"
   },
   "repository": {
-    "url": "git+https://github.com/DIYgod/DPlayer.git",
+    "url": "git+https://github.com/uimeet/PaPlayer.git",
     "type": "git"
   },
   "keywords": [
@@ -21,9 +21,9 @@
   "author": "DIYgod",
   "license": "SATA",
   "bugs": {
-    "url": "https://github.com/DIYgod/DPlayer/issues"
+    "url": "https://github.com/uimeet/PaPlayer/issues"
   },
-  "homepage": "https://github.com/DIYgod/DPlayer#readme",
+  "homepage": "https://github.com/uimeet/PaPlayer#readme",
   "devDependencies": {
     "autoprefixer": "^6.7.2",
     "babel-core": "^6.22.1",

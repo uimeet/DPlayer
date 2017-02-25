@@ -1,14 +1,14 @@
-var webpack = require('webpack');
-var path = require('path');
-var autoprefixer = require('autoprefixer');
+let webpack = require('webpack');
+let path = require('path');
+let autoprefixer = require('autoprefixer');
 
-var libraryName = 'DPlayer';
-var env = process.env.WEBPACK_ENV;
-var ROOT_PATH = path.resolve(__dirname);
-var APP_PATH = path.resolve(ROOT_PATH, 'src');
-var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
+let libraryName = 'PaPlayer';
+let env = process.env.WEBPACK_ENV;
+let ROOT_PATH = path.resolve(__dirname);
+let APP_PATH = path.resolve(ROOT_PATH, 'src');
+let BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
-var plugins = [];
+let plugins = [];
 if (env !== 'dev') {
     plugins.push(
         new webpack.optimize.UglifyJsPlugin({
@@ -24,8 +24,9 @@ module.exports = {
         path: BUILD_PATH,
         filename: libraryName + '.min.js',
         library: libraryName,
-        libraryTarget: 'umd',
-        umdNamedDefine: true
+        libraryTarget: 'var',
+        // libraryTarget: 'umd',
+        // umdNamedDefine: true
     },
 
     devtool: 'source-map',
