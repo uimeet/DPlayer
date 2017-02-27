@@ -990,10 +990,14 @@ class PaPlayer {
             let clarityTimer, clarityCall = this.option.clarityCall;
 
             current_clarity.addEventListener('click', () => {
-                clarity_list.style.display = "block";
-                clarityTimer = setTimeout(function () {
+                if (clarity_list.style.display != 'block') {
+                    clarity_list.style.display = "block";
+                    clarityTimer = setTimeout(function () {
+                        clarity_list.style.display = "none";
+                    }, 5000);
+                }else{
                     clarity_list.style.display = "none";
-                }, 5000);
+                }
             });
             clarity_list.addEventListener('mouseenter', () => {
                 clarityTimer && clearTimeout(clarityTimer);
