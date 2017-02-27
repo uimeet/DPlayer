@@ -109,6 +109,13 @@
     }
   }
 
+  .ali_icon {
+    width: 1em; height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+  }
+
   .paplayer-video-wrap {
     position: relative;
     background: #000;
@@ -488,6 +495,35 @@
               }
             }
           }
+        }
+      }
+
+      .switch-clarity {
+        position: relative;
+        display: inline-block;
+        height: 100%;
+
+        .paplayer-clarity-icon{
+          padding: 0;
+          color: #fff;
+
+          &.active{
+            color: #FF8100;
+          }
+        }
+
+
+        .ali_icon{
+          width:40px;
+          height:30px;
+        }
+
+        .paplayer-clarity-box {
+          position: absolute;
+          left: 0;
+          bottom: 50px;
+          background: rgba(28, 28, 28, 0.9);
+          display: none;
         }
       }
 

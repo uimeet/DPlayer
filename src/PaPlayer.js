@@ -1,6 +1,7 @@
 console.log("\n %c PaPlayer 1.1.2 start. \n\n","color: #070602; background: #fed100; padding:5px 0;");
 
 require('./PaPlayer.scss');
+require('./iconfont.js');
 const defaultApiBackend = require('./api.js');
 
 let index = 0;
@@ -46,7 +47,11 @@ class PaPlayer {
             this.option.autoplay = false;
         }
 
-        // default options
+        /*
+         default options
+         @clarity //清晰度选择，在option.video中可设置clarity属性：{"HD":"SHD","LD":"SLD"}，（HD,LD是固定的见clarityArr，SHD,SLD是自定义的）
+                    然后再添加一个option.clarityCall回调来完成视频源的切换
+         */
         const defaultOption = {
             element: document.getElementsByClassName('paplayer')[0],
             autoplay: false,
@@ -56,13 +61,45 @@ class PaPlayer {
             screenshot: false,
             hotkey: true,
             preload: 'auto',
-            apiBackend: defaultApiBackend
+            apiBackend: defaultApiBackend,
+            clarity:null,
+            clarityCall: function (clarity_tag, el) {
+                console.log('未设置clarityCall回调：option.apiBackend(clarity_tag, el)');
+            }
         };
         for (let defaultKey in defaultOption) {
             if (defaultOption.hasOwnProperty(defaultKey) && !this.option.hasOwnProperty(defaultKey)) {
                 this.option[defaultKey] = defaultOption[defaultKey];
             }
         }
+
+        const clarityArr = {
+            HD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibochaoqingkuang"></use></svg>`,
+            SD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibogaoqingkuang"></use></svg>`,
+            LD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibobiaoqingkuang"></use></svg>`,
+            FD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhiboliuchangkuang"></use></svg>`,
+        };
+
+        //设置可选清晰度
+        this.setClarity = (clarity) => {
+            if (!clarity) return ``;
+            let f, l = {};
+            for (var i in clarity) {
+                if (typeof clarityArr[i] == 'undefined') continue;
+                !f && (f = i );
+                l[i] = clarity[i];
+            }
+            this.option.clarity = l;
+            let html = `<div class="switch-clarity">
+                        <button class="paplayer-icon paplayer-clarity-icon current_clarity" data-clarity="${clarity[f]}">${clarityArr[f]}</button>
+                        <div class="paplayer-clarity-box clarity_list">`;
+            for (var i in l) {
+                html += `<button class="paplayer-icon paplayer-clarity-icon ${i == f ? "active" : ""}" data-clarity="${l[i]}">${clarityArr[i]}</button>`;
+            }
+
+            html += `</div></div>`;
+            return html;
+        };
 
         const tranZH = {
             'Danmaku is loading': '弹幕加载中',
@@ -251,6 +288,8 @@ class PaPlayer {
             + `         </button>
                         <div class="paplayer-setting-box"></div>
                     </div>
+                    ${this.setClarity(this.option.video.clarity ? this.option.video.clarity : null) }`
+            + `     
                     <button class="paplayer-icon paplayer-full-icon">`
             +           this.getSVG('full')
             + `     </button>
@@ -943,6 +982,48 @@ class PaPlayer {
         const commentSettingIcon = this.element.getElementsByClassName('paplayer-comment-setting-icon')[0];
         const commentSettingBox = this.element.getElementsByClassName('paplayer-comment-setting-box')[0];
         const commentSendIcon = this.element.getElementsByClassName('paplayer-send-icon')[0];
+
+
+        const current_clarity = this.element.getElementsByClassName('current_clarity')[0];
+        if (current_clarity) {
+            const clarity_list = this.element.getElementsByClassName('clarity_list')[0];
+            let clarityTimer, clarityCall = this.option.clarityCall;
+
+            current_clarity.addEventListener('click', () => {
+                clarity_list.style.display = "block";
+                clarityTimer = setTimeout(function () {
+                    clarity_list.style.display = "none";
+                }, 5000);
+            });
+            clarity_list.addEventListener('mouseenter', () => {
+                clarityTimer && clearTimeout(clarityTimer);
+            });
+            clarity_list.addEventListener('mouseleave', () => {
+                clarityTimer = setTimeout(function () {
+                    clarity_list.style.display = "none";
+                }, 5000);
+            });
+
+            for (let i=0, l=clarity_list.childNodes.length; i < l ; i++) {
+                clarity_list.childNodes[i].addEventListener('click', function(){
+                    let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
+                    if (defaultApiBackend.hasClass(el, 'active')) {
+                        return;
+                    }
+                    for (let i=0, l=s.length; i<l; i++){
+                        if (s[i].dataset.clarity == clarity) {
+                            defaultApiBackend.addClass(s[i], 'active');
+                            continue;
+                        }
+                        defaultApiBackend.removeClass(s[i], 'active');
+                    }
+                    current_clarity.dataset.clarity = clarity;
+                    current_clarity.innerHTML = el.innerHTML;
+                    clarity_list.style.display = "none";
+                    clarityCall.call(this, clarity, el);
+                });
+            }
+        }
 
         const htmlEncode = (str) => {
             return str.replace(/&/g, "&amp;")

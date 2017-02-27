@@ -71,13 +71,17 @@
         hotkey: true,
         video: {
             url: 'http://devtest.qiniudn.com/若能绽放光芒.mp4',
-            pic: 'http://devtest.qiniudn.com/若能绽放光芒.png'
+            pic: 'http://devtest.qiniudn.com/若能绽放光芒.png',
+            clarity:{"HD":"SHD","LD":"SLD"}
         },
         danmaku: {
             id: '9E2E3368B56CDBB4',
             api: 'https://api.prprpr.me/dplayer/',
             token: 'tokendemo',
             maximum: 3000
+        },
+        clarityCall: function (clarity_tag, el) {
+            console.log(clarity_tag, el);
         }
     });
     function switchPaPlayer() {
