@@ -1039,7 +1039,7 @@ class PaPlayer {
 
             // text can't be empty
             if (!commentInput.value.replace(/^\s+|\s+$/g, '')) {
-                alert(getTran('Please input danmaku!'));
+                console.warn(getTran('Please input danmaku!'));
                 return;
             }
 
@@ -1363,7 +1363,7 @@ class PaPlayer {
             ++readCount;
             if (err) {
                 if (err.response)
-                    alert(err.response.msg);
+                    console.warn(err.response.msg);
                 else
                     console.log('Request was unsuccessful: ' + err.status);
                 results[i] = [];
