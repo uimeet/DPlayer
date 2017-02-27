@@ -1,4 +1,4 @@
-// console.log("\n %c PaPlayer 1.1.2 %c  \n\n","color: #fadfa3; background: #030307; padding:5px 0;","background: #fadfa3; padding:5px 0;");
+console.log("\n %c PaPlayer 1.1.2 start. \n\n","color: #070602; background: #fed100; padding:5px 0;");
 
 require('./PaPlayer.scss');
 const defaultApiBackend = require('./api.js');
