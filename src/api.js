@@ -105,7 +105,7 @@ export const send = (endpoint, danmakuData) => {
     SendXMLHttpRequest(endpoint, danmakuData, (xhr, response) => {
         console.log('Post danmaku: ', response)
     }, (xhr, response) => {
-        alert(response.msg)
+        console.warn(response.msg)
     }, (xhr) => {
         console.log('Request was unsuccessful: ' + xhr.status)
     })
