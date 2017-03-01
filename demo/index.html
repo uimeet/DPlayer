@@ -5,11 +5,13 @@
     <title>PaPlayer Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+		*,::after,::before { box-sizing:border-box; }
+		html { font-size:calc(100vmin/3.75); }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			margin:0; font-size:16px; 
         }
         .container {
-            max-width: 40rem;
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 50px;
@@ -26,14 +28,6 @@
         h3 {
             font-size: 24px;
             color: #555;
-        }
-        hr {
-            display: block;
-            width: 7rem;
-            height: 1px;
-            margin: 2.5rem 0;
-            background-color: #eee;
-            border: 0;
         }
         a {
             color: #08c;
