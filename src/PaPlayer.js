@@ -60,7 +60,7 @@ class PaPlayer {
             lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
             screenshot: false,
             hotkey: true,
-            preload: 'auto',
+            preload: 'auto',  //auto|meta|none
             apiBackend: defaultApiBackend,
             clarity:null,
             clarityCall: function (clarity_tag, el) {
@@ -102,7 +102,7 @@ class PaPlayer {
         };
 
         const tranZH = {
-            'Danmaku is loading': '弹幕加载中',
+            'Danmaku is loading': '加载弹幕...',
             'Top': '顶部',
             'Bottom': '底部',
             'Rolling': '滚动',
@@ -161,7 +161,17 @@ class PaPlayer {
         this.element.innerHTML = `
             <div class="paplayer-mask"></div>
             <div class="paplayer-video-wrap">
-                <video class="paplayer-video" ${this.option.video.pic ? `poster="${this.option.video.pic}"` : ``} webkit-playsinline ${this.option.screenshot ? `crossorigin="anonymous"` : ``} preload="${this.option.preload}" src="${this.option.video.url}"></video>
+                <video class="paplayer-video" ${this.option.video.pic ? `poster="${this.option.video.pic}"` : ``}
+                    x5-video-player-type="h5"
+                    x5-video-player-fullscreen="true"
+                    webkit-playsinline="true"
+                    -webkit-playsinline="true"
+                    x-webkit-airplay="true"
+                    playsinline="true"
+                    ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
+                    preload="${this.option.preload}"
+                    src="${this.option.video.url}">
+                </video>
                 <div class="paplayer-danmaku">
                     <div class="paplayer-danmaku-item paplayer-danmaku-item--demo"></div>
                 </div>
@@ -199,6 +209,7 @@ class PaPlayer {
                 </div>
             </div>
             <div class="paplayer-controller-mask"></div>
+            <div class="goplayBtn"><span class="start"></span></div>
             <div class="paplayer-controller">
                 <div class="paplayer-icons paplayer-icons-left">
                     <button class="paplayer-icon paplayer-play-icon">`
@@ -333,6 +344,12 @@ class PaPlayer {
         this.playButton = this.element.getElementsByClassName('paplayer-play-icon')[0];
         this.shouldpause = true;
         this.playButton.addEventListener('click', () => {
+            this.toggle();
+        });
+
+        // goplayBtn to play
+        this.goplayBtn = this.element.getElementsByClassName('goplayBtn')[0];
+        this.goplayBtn.addEventListener('click', () => {
             this.toggle();
         });
 
@@ -1011,15 +1028,16 @@ class PaPlayer {
             for (let i=0, l=clarity_list.childNodes.length; i < l ; i++) {
                 clarity_list.childNodes[i].addEventListener('click', function(){
                     let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
-                    if (defaultApiBackend.hasClass(el, 'active')) {
+
+                    if (el.classList.contains('active')) {
                         return;
                     }
                     for (let i=0, l=s.length; i<l; i++){
                         if (s[i].dataset.clarity == clarity) {
-                            defaultApiBackend.addClass(s[i], 'active');
+                            s[i].classList.add('active');
                             continue;
                         }
-                        defaultApiBackend.removeClass(s[i], 'active');
+                        s[i].classList.remove('active');
                     }
                     current_clarity.dataset.clarity = clarity;
                     current_clarity.innerHTML = el.innerHTML;
@@ -1293,6 +1311,7 @@ class PaPlayer {
             this.bezel.classList.add('paplayer-bezel-transition');
 
             this.playButton.innerHTML = this.getSVG('pause');
+            this.goplayBtn.style.display = 'none';
 
             this.video.play();
             if (this.playedTime) {
@@ -1301,6 +1320,9 @@ class PaPlayer {
             this.setTime();
             this.element.classList.add('paplayer-playing');
             this.trigger('play');
+            setTimeout(() => {
+                this.element.classList.add('paplayer-hide-controller');
+            }, 2000);
         }
     }
 
@@ -1317,6 +1339,8 @@ class PaPlayer {
 
             this.ended = false;
             this.playButton.innerHTML = this.getSVG('play');
+            this.goplayBtn.style.display = 'block';
+
             this.video.pause();
             this.clearTime();
             this.element.classList.remove('paplayer-playing');

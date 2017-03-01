@@ -68,6 +68,7 @@
         theme: '#FADFA3',
         loop: true,
         screenshot: true,
+        preload:'none', //auto|meta|none  , autoplay=true 忽略
         hotkey: true,
         video: {
             url: 'http://devtest.qiniudn.com/若能绽放光芒.mp4',
@@ -115,8 +116,9 @@
     var dp3 = new PaPlayer({
         element: document.getElementById('paplayer3'),
         autoplay: false,
+        preload:'meta',
         theme: '#FADFA3',
-        loop: true,
+        loop: false,
         screenshot: true,
         hotkey: true,
         video: {
@@ -135,6 +137,7 @@
     var dp4 = new PaPlayer({
         element: document.getElementById('paplayer4'),
         autoplay: false,
+        preload:'auto',
         theme: '#FADFA3',
         loop: true,
         screenshot: true,
