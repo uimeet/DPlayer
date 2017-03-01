@@ -4,6 +4,10 @@
   user-select:none;
   line-height:1;
 
+  * {
+    box-sizing:initial;
+  }
+
   &:-webkit-full-screen {
     width:100%;
     height:100%;
@@ -302,6 +306,40 @@
     transition:all .3s ease;
   }
 
+  .goplayBtn{
+    position: absolute;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    top: 50%;
+    left: 50%;
+    margin-left: -35px;
+    margin-top: -35px;
+    border: 35px solid rgba(255, 255, 255, 0.4);
+    color: #404040;
+    border-radius: 100%;
+
+    &:active{
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:hover{
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .start{
+      border-style: solid;
+      text-indent: -9999px;
+      position: absolute;
+      top: -15px;
+      left: -7px;
+      border-color: transparent transparent transparent rgba(255, 255, 255, 0.5);
+      border-width: 15px 0 15px 25px;
+      width: 0;
+      height: 0;
+    }
+  }
+
   .paplayer-controller {
     position:absolute;
     bottom:0;
@@ -376,6 +414,8 @@
       bottom:0;
 
       &.paplayer-icons-left {
+        margin-left: -16px;
+
         .paplayer-icon {
           padding:.07rem;
         }
@@ -503,8 +543,13 @@
         height:100%;
 
         .paplayer-clarity-icon{
+<<<<<<< .mine
           padding:0;
           color:#fff;
+=======
+          padding: 4px;
+          color: #fff;
+>>>>>>> .theirs
 
           &.active{
             color:#FF8100;
@@ -513,8 +558,15 @@
 
 
         .ali_icon{
+<<<<<<< .mine
           width:.4rem;
           height:.3rem;
+
+=======
+          width: 100%;
+          height: 100%;
+          padding: 0;
+>>>>>>> .theirs
         }
 
         .paplayer-clarity-box {
@@ -523,6 +575,12 @@
           bottom:.5rem;
           background:rgba(28,28,28,.9);
           display:none;
+
+          .paplayer-clarity-icon{
+            height: 34px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+          }
         }
       }
 
@@ -531,6 +589,7 @@
         height:100%;
 
         .paplayer-setting-box {
+<<<<<<< .mine
           position:absolute;
           right:0;
           bottom:.5rem;
@@ -542,6 +601,23 @@
           transition:all .3s ease-in-out;
           overflow:hidden;
           z-index:2;
+
+
+=======
+          position: absolute;
+          right: 0;
+          bottom: 50px;
+          transform: translateY(200px);
+          width: 150px;
+          height:auto;
+          //height: 120px;
+          border-radius: 2px;
+          background: rgba(28, 28, 28, 0.9);
+          padding: 7px 0;
+          transition: all .15s ease-in-out;
+          overflow: hidden;
+          z-index: 2;
+>>>>>>> .theirs
 
           &.paplayer-setting-box-open {
             transform:translateX(0);
@@ -641,6 +717,7 @@
         height:100%;
 
         .paplayer-comment-box {
+<<<<<<< .mine
           position:absolute;
           right:0;
           bottom:.5rem;
@@ -649,8 +726,25 @@
           transition:all .3s ease-in-out;
           z-index:2;
 
+
+=======
+          position: absolute;
+          right: 6%;
+          bottom: 2px;
+          width: 150% !important;
+          width: 260px;
+          transform: translateY(60px);
+          border-radius: 2px;
+          transition: all .2s ease-in-out;
+          z-index: 2;
+>>>>>>> .theirs
+
           &.paplayer-comment-box-open {
+<<<<<<< .mine
             transform:translateX(0);
+=======
+            transform: translateY(0);
+>>>>>>> .theirs
           }
 
           .paplayer-comment-setting-icon {
@@ -675,6 +769,7 @@
           }
 
           .paplayer-comment-setting-box {
+<<<<<<< .mine
             position:absolute;
             background:#fff;
             bottom:.4rem;
@@ -686,12 +781,26 @@
             width:3rem;
             transition:all .3s ease-in-out;
             transform:scale(0);
+=======
+            position: absolute;
+            background: #fff;
+            bottom: 40px;
+            left: 0px;
+            box-shadow: 0 0 25px rgba(0,0,0,.3);
+            border-radius: 4px;
+            padding: 10px 10px 16px;
+            font-size: 14px;
+            width: 204px;
+            transition: all .15s ease-in-out;
+            transform: scale(0);
+>>>>>>> .theirs
 
             &.paplayer-comment-setting-open {
               transform:scale(1);
             }
 
-            &::after {
+            &:after {
+<<<<<<< .mine
               content:'';
               position:absolute;
               top:100%;
@@ -699,6 +808,17 @@
               background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 12"><path fill="#FFF" d="M23.7,0c-1.2,0-2.4,0.5-3.2,1.3l-7.7,7.8c-0.4,0.4-1.1,0.4-1.5,0L3.5,1.3C2.7,0.5,1.5,0,0.3,0"/></svg>');
               width:.24rem;
               height:.12rem;
+
+=======
+              content: '';
+              position: absolute;
+              top: 100%;
+              left: 10%;
+              margin-left: -12px;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 12"><path fill="#FFF" d="M23.7,0c-1.2,0-2.4,0.5-3.2,1.3l-7.7,7.8c-0.4,0.4-1.1,0.4-1.5,0L3.5,1.3C2.7,0.5,1.5,0,0.3,0"/></svg>');
+              width: 24px;
+              height: 12px;
+>>>>>>> .theirs
             }
 
             input[type=radio] {
@@ -706,10 +826,17 @@
             }
 
             label {
+<<<<<<< .mine
               cursor:pointer;
               display:inline !important;
               margin-bottom:0;
               font-weight:normal;
+=======
+              cursor: pointer;
+              display: inline;
+              margin-bottom: 0px;
+              font-weight: normal;
+>>>>>>> .theirs
             }
 
             .paplayer-comment-setting-title {
@@ -788,6 +915,7 @@
           }
 
           .paplayer-comment-input {
+<<<<<<< .mine
             outline:none;
             border:none;
             padding:.08rem .31rem;
@@ -799,6 +927,19 @@
             background:#fff;
             margin:0;
             height:auto;
+=======
+            outline: none;
+            border: none;
+            padding: 8px 31px;
+            font-size: 14px;
+            line-height: 18px;
+            text-align: center;
+            border-radius: 4px;
+            width: calc(100% - 62px);
+            background: #fff;
+            margin: 0;
+            height: auto;
+>>>>>>> .theirs
           }
 
           .paplayer-send-icon {
@@ -931,6 +1072,40 @@
       }
     }
   }
+}
+
+
+@media screen and (max-width: 414px) {
+  .paplayer{
+    .paplayer-controller{
+        padding: 0 15px;
+
+      .paplayer-bar-wrap{
+        width: calc(100% - 30px);
+      }
+
+      .paplayer-icons{
+        &.paplayer-icons-left{
+          margin-left: -12px;
+        }
+
+        &.paplayer-icons-right{
+          right: 8px;
+        }
+
+        .paplayer-comment {
+          .paplayer-comment-box {
+            right: 7px;
+          }
+        }
+
+        .paplayer-icon{
+          width: 38px;
+        }
+      }
+    }
+  }
+
 }
 
 @keyframes my-face {
