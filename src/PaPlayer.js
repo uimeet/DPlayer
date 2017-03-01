@@ -1,4 +1,4 @@
-console.log("\n %c PaPlayer 1.1.2 start. \n\n","color: #070602; background: #fed100; padding:5px 0;");
+// console.log("\n %c PaPlayer 1.1.2 start. \n\n","color: #070602; background: #fed100; padding:5px 0;");
 
 require('./PaPlayer.scss');
 require('./iconfont.js');
@@ -828,7 +828,7 @@ class PaPlayer {
 
         // video download error: an error occurs
         this.video.addEventListener('error', () => {
-            this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = `Error happens ╥﹏╥`;
+            this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = `--`;
             this.trigger('pause');
         });
 
@@ -1224,39 +1224,41 @@ class PaPlayer {
         /**
          * right key
          */
-        const menu = this.element.getElementsByClassName('paplayer-menu')[0];
-        this.element.addEventListener('contextmenu', (e) => {
-            const event = e || window.event;
-            event.preventDefault();
+        if (!isMobile) {
+            const menu = this.element.getElementsByClassName('paplayer-menu')[0];
+            this.element.addEventListener('contextmenu', (e) => {
+                const event = e || window.event;
+                event.preventDefault();
 
-            menu.classList.add('paplayer-menu-show');
+                menu.classList.add('paplayer-menu-show');
 
-            const clientRect = this.element.getBoundingClientRect();
-            const menuLeft = event.clientX - clientRect.left;
-            const menuTop = event.clientY - clientRect.top;
-            if (menuLeft + menu.offsetWidth >= clientRect.width) {
-                menu.style.right = clientRect.width - menuLeft + 'px';
-                menu.style.left = 'initial';
-            }
-            else {
-                menu.style.left = event.clientX - this.element.getBoundingClientRect().left + 'px';
-                menu.style.right = 'initial';
-            }
-            if (menuTop + menu.offsetHeight >= clientRect.height) {
-                menu.style.bottom = clientRect.height - menuTop + 'px';
-                menu.style.top = 'initial';
-            }
-            else {
-                menu.style.top = event.clientY - this.element.getBoundingClientRect().top + 'px';
-                menu.style.bottom = 'initial';
-            }
+                const clientRect = this.element.getBoundingClientRect();
+                const menuLeft = event.clientX - clientRect.left;
+                const menuTop = event.clientY - clientRect.top;
+                if (menuLeft + menu.offsetWidth >= clientRect.width) {
+                    menu.style.right = clientRect.width - menuLeft + 'px';
+                    menu.style.left = 'initial';
+                }
+                else {
+                    menu.style.left = event.clientX - this.element.getBoundingClientRect().left + 'px';
+                    menu.style.right = 'initial';
+                }
+                if (menuTop + menu.offsetHeight >= clientRect.height) {
+                    menu.style.bottom = clientRect.height - menuTop + 'px';
+                    menu.style.top = 'initial';
+                }
+                else {
+                    menu.style.top = event.clientY - this.element.getBoundingClientRect().top + 'px';
+                    menu.style.bottom = 'initial';
+                }
 
-            mask.classList.add('paplayer-mask-show');
-            mask.addEventListener('click', () => {
-                mask.classList.remove('paplayer-mask-show');
-                menu.classList.remove('paplayer-menu-show');
+                mask.classList.add('paplayer-mask-show');
+                mask.addEventListener('click', () => {
+                    mask.classList.remove('paplayer-mask-show');
+                    menu.classList.remove('paplayer-menu-show');
+                });
             });
-        });
+        }
 
         /**
          * Screenshot
