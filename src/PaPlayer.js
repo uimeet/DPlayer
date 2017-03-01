@@ -51,6 +51,8 @@ class PaPlayer {
          default options
          @clarity //清晰度选择，在option.video中可设置clarity属性：{"HD":"SHD","LD":"SLD"}，（HD,LD是固定的见clarityArr，SHD,SLD是自定义的）
                     然后再添加一个option.clarityCall回调来完成视频源的切换
+         @preload  //auto|meta|none
+         @area  //播放器宽高，有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
          */
         const defaultOption = {
             element: document.getElementsByClassName('paplayer')[0],
@@ -60,9 +62,10 @@ class PaPlayer {
             lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
             screenshot: false,
             hotkey: true,
-            preload: 'auto',  //auto|meta|none
+            preload: 'auto',
             apiBackend: defaultApiBackend,
             clarity:null,
+            area:false,
             clarityCall: function (clarity_tag, el) {
                 console.log('未设置clarityCall回调：option.apiBackend(clarity_tag, el)');
             }
@@ -128,6 +131,19 @@ class PaPlayer {
             }
         };
 
+        const getAreaAttr = (area) => {
+            if (area instanceof Array && area.length == 2) {
+                return 'width="'+area[0]+'" height="'+area[1]+'"';
+            }
+            if (area instanceof Array && area.length == 1) {
+                return 'width="100%" height="'+area[0]+'"';
+            }
+            if (area !== false) {
+                return 'width="100%" height="' + area + '"';
+            }
+            return 'width="100%" height="100%"';
+        };
+
         /**
          * Update progress bar, including loading progress bar and play progress bar
          *
@@ -168,6 +184,7 @@ class PaPlayer {
                     -webkit-playsinline="true"
                     x-webkit-airplay="true"
                     playsinline="true"
+                    ${this.option.area!==false ? getAreaAttr(this.option.area) : ``}
                     ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
                     preload="${this.option.preload}"
                     src="${this.option.video.url}">
@@ -615,7 +632,7 @@ class PaPlayer {
         let danOpacity = localStorage.getItem('PaPlayer-opacity') || 0.7;
         const settingHTML = {
             'original': `
-                    <div class="paplayer-setting-item paplayer-setting-speed">
+                    <div class="paplayer-setting-item paplayer-setting-speed" style="display: none;">
                         <span class="paplayer-label">${getTran('Speed')}</span>
                         <div class="paplayer-toggle">`
             +           this.getSVG('right')
