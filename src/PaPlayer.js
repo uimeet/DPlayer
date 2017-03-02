@@ -132,16 +132,17 @@ class PaPlayer {
         };
 
         const getAreaAttr = (area) => {
+            let style = "";
             if (area instanceof Array && area.length == 2) {
-                return 'width="'+area[0]+'" height="'+area[1]+'"';
+                style = 'width:' + area[0] + '; height:' + area[1] + ';';
+            } else if (area instanceof Array && area.length == 1) {
+                style = 'width:100%; height:' + area[0] + ';';
+            } else if (area !== false) {
+                style = 'width:100%; height:' + area + ';';
+            } else {
+                style = 'width:100%; height:100%;';
             }
-            if (area instanceof Array && area.length == 1) {
-                return 'width="100%" height="'+area[0]+'"';
-            }
-            if (area !== false) {
-                return 'width="100%" height="' + area + '"';
-            }
-            return 'width="100%" height="100%"';
+            return 'style="' + style + '"';
         };
 
         /**
@@ -176,7 +177,7 @@ class PaPlayer {
 
         this.element.innerHTML = `
             <div class="paplayer-mask"></div>
-            <div class="paplayer-video-wrap">
+            <div class="paplayer-video-wrap" ${getAreaAttr(this.option.area)}>
                 <video class="paplayer-video" ${this.option.video.pic ? `poster="${this.option.video.pic}"` : ``}
                     x5-video-player-type="h5"
                     x5-video-player-fullscreen="true"
@@ -184,7 +185,6 @@ class PaPlayer {
                     -webkit-playsinline="true"
                     x-webkit-airplay="true"
                     playsinline="true"
-                    ${this.option.area!==false ? getAreaAttr(this.option.area) : ``}
                     ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
                     preload="${this.option.preload}"
                     src="${this.option.video.url}">
@@ -1179,17 +1179,33 @@ class PaPlayer {
             }
         };
 
+        let isFull = false;
+        const playerFullSize = () => {
+            let pl = this.element.getElementsByClassName('paplayer-video-wrap')[0];
+            if (isFull) {
+                //取消全屏
+                pl.classList.remove('full');
+            }else{
+                //全屏
+                pl.classList.add('full');
+            }
+            isFull = !isFull;
+        };
+
         this.element.addEventListener('fullscreenchange', () => {
+            playerFullSize();
             resetAnimation();
-            console.log(danContainer.offsetHeight);
+            // console.log(danContainer.offsetHeight);
         });
         this.element.addEventListener('mozfullscreenchange', () => {
+            playerFullSize();
             resetAnimation();
-            console.log(danContainer.offsetHeight);
+            // console.log(danContainer.offsetHeight);
         });
         this.element.addEventListener('webkitfullscreenchange', () => {
+            playerFullSize();
             resetAnimation();
-            console.log(danContainer.offsetHeight);
+            // console.log(danContainer.offsetHeight);
         });
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
             if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
