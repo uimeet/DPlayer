@@ -1485,7 +1485,7 @@ class PaPlayer {
      * @param {Object} danmaku - new danmaku info
      */
     switchVideo(video, danmaku) {
-        this.video.src = video.url;
+        this.option.video.url = this.video.src = video.url;
         this.video.poster = video.pic ? video.pic : '';
         this.video.currentTime = 0;
         this.pause();
