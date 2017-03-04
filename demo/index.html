@@ -72,18 +72,15 @@
         area:'300px', //有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
         hotkey: true,
         video: {
-            url: 'http://devtest.qiniudn.com/若能绽放光芒.mp4',
+            url: 'http://vodplaytest.mobandao.com/10495e243b42e2f37a256a139391357a/58BA839E/vod/m3u8/4A1D1CEBB9B8-CE5638-D27E-72EB-93873F-891590F2/hd/4A1D1CEBB9B8-CE5638-D27E-72EB-93873F-891590F2.m3u8',
             pic: 'http://devtest.qiniudn.com/若能绽放光芒.png',
-            clarity:{"HD":"SHD","LD":"SLD"}
-        },
-        danmaku: {
-            id: '9E2E3368B56CDBB4',
-            api: 'https://api.prprpr.me/dplayer/',
-            token: 'tokendemo',
-            maximum: 3000
+            clarity:{"LD": 'M3U8_LD', 'SD': 'M3U8_SD', "HD": 'M3U8_HD'}
         },
         clarityCall: function (clarity_tag, el) {
-            console.log(clarity_tag, el);
+            dp1.switchVideo({
+                url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
+                pic: 'http://devtest.qiniudn.com/微小微-江南皮革厂倒闭了.jpg'
+            });
         }
     });
     function switchPaPlayer() {
