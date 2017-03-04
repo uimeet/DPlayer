@@ -401,14 +401,14 @@ class PaPlayer {
          * @param {Boolen} full
          * @return {String} 00:00 format
          */
-        const secondToTime = (second, full) => {
+        const secondToTime = (second) => {
             const add0 = (num) => {
                 return num < 10 ? '0' + num : '' + num;
             };
             const hr = parseInt(second / 3600);
             const min = parseInt((second - hr*3600) / 60);
             const sec = parseInt(second - hr*3600 - min*60);
-            return hr>0 ? add0(hr) + ':' + add0(min) + (full? ':' + add0(sec) : ''): add0(min) + ':' + add0(sec);
+            return hr>0 ? add0(hr) + ':' + add0(min) + add0(sec): add0(min) + ':' + add0(sec);
         };
 
         /**
@@ -852,7 +852,7 @@ class PaPlayer {
         // show video time: the metadata has loaded or changed
         this.video.addEventListener('durationchange', () => {
             if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
-                this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = secondToTime(this.video.duration, true);
+                this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = secondToTime(this.video.duration);
             }
         });
 
@@ -892,7 +892,7 @@ class PaPlayer {
 
         // set duration time
         if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
-            this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = this.video.duration ? secondToTime(this.video.duration, true) : '00:00';
+            this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = this.video.duration ? secondToTime(this.video.duration) : '00:00';
         }
 
 
