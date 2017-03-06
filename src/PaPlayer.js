@@ -49,7 +49,9 @@ class PaPlayer {
 
         /*
          default options
-         @clarity //清晰度选择，在option.video中可设置clarity属性：{"HD":"SHD","LD":"SLD"}，（HD,LD是固定的见clarityArr，SHD,SLD是自定义的）
+         @clarity //当前播放的视频清晰度,HD|SD|LD
+                    在option.video中可设置clarity属性：{"HD":"SHD","LD":"SLD"}，（HD,LD是固定的见clarityArr，SHD,SLD是自定义的）
+                    在option.video中可设置current_clarity属性：当前的清晰度，否则为option.video.clarity第1个, HD|LD|SD
                     然后再添加一个option.clarityCall回调来完成视频源的切换
          @preload  //auto|meta|none
          @area  //播放器宽高，有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
@@ -67,7 +69,8 @@ class PaPlayer {
             clarity:null,
             area:false,
             clarityCall: function (clarity_tag, el) {
-                console.log('未设置clarityCall回调：option.apiBackend(clarity_tag, el)');
+                console.log('未设置clarityCall回调：option.apiBackend(clarity_tag, el)', clarity_tag);
+                return true;
             }
         };
         for (let defaultKey in defaultOption) {
@@ -80,24 +83,16 @@ class PaPlayer {
             HD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibochaoqingkuang"></use></svg>`,
             SD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibogaoqingkuang"></use></svg>`,
             LD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibobiaoqingkuang"></use></svg>`,
-            FD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhiboliuchangkuang"></use></svg>`,
+            //FD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhiboliuchangkuang"></use></svg>`,
         };
 
-        //设置可选清晰度
-        this.setClarity = (clarity) => {
-            if (!clarity) return ``;
-            let f, l = {};
-            for (var i in clarity) {
-                if (typeof clarityArr[i] == 'undefined') continue;
-                !f && (f = i );
-                l[i] = clarity[i];
-            }
-            this.option.clarity = l;
-            let html = `<div class="switch-clarity">
-                        <button class="paplayer-icon paplayer-clarity-icon current_clarity" data-clarity="${clarity[f]}">${clarityArr[f]}</button>
+        //清晰度html
+        this.getClarity = () => {
+            let html = `<div class="switch-clarity" style="display: none;">
+                        <button class="paplayer-icon paplayer-clarity-icon current_clarity"></button>
                         <div class="paplayer-clarity-box clarity_list">`;
-            for (var i in l) {
-                html += `<button class="paplayer-icon paplayer-clarity-icon ${i == f ? "active" : ""}" data-clarity="${l[i]}">${clarityArr[i]}</button>`;
+            for (var i in clarityArr) {
+                html += `<button class="paplayer-icon paplayer-clarity-icon ${i}" style="display: none">${clarityArr[i]}</button>`;
             }
 
             html += `</div></div>`;
@@ -316,7 +311,7 @@ class PaPlayer {
             + `         </button>
                         <div class="paplayer-setting-box"></div>
                     </div>
-                    ${this.setClarity(this.option.video.clarity ? this.option.video.clarity : null) }`
+                    ${this.getClarity()}`
             + `     
                     <button class="paplayer-icon paplayer-full-icon">`
             +           this.getSVG('full')
@@ -401,14 +396,14 @@ class PaPlayer {
          * @param {Boolen} full
          * @return {String} 00:00 format
          */
-        const secondToTime = (second, full) => {
+        const secondToTime = (second) => {
             const add0 = (num) => {
                 return num < 10 ? '0' + num : '' + num;
             };
             const hr = parseInt(second / 3600);
             const min = parseInt((second - hr*3600) / 60);
             const sec = parseInt(second - hr*3600 - min*60);
-            return hr>0 ? add0(hr) + ':' + add0(min) + (full? ':' + add0(sec) : ''): add0(min) + ':' + add0(sec);
+            return hr>0 ? add0(hr) + ':' + add0(min) + add0(sec): add0(min) + ':' + add0(sec);
         };
 
         /**
@@ -852,7 +847,7 @@ class PaPlayer {
         // show video time: the metadata has loaded or changed
         this.video.addEventListener('durationchange', () => {
             if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
-                this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = secondToTime(this.video.duration, true);
+                this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = secondToTime(this.video.duration);
             }
         });
 
@@ -892,9 +887,8 @@ class PaPlayer {
 
         // set duration time
         if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
-            this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = this.video.duration ? secondToTime(this.video.duration, true) : '00:00';
+            this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = this.video.duration ? secondToTime(this.video.duration) : '00:00';
         }
-
 
         /**
          * danmaku display
@@ -1021,49 +1015,50 @@ class PaPlayer {
 
 
         const current_clarity = this.element.getElementsByClassName('current_clarity')[0];
-        if (current_clarity) {
-            const clarity_list = this.element.getElementsByClassName('clarity_list')[0];
-            let clarityTimer, clarityCall = this.option.clarityCall;
+        const clarity_list = this.element.getElementsByClassName('clarity_list')[0];
+        let clarityTimer, clarityCall = this.option.clarityCall;
 
-            current_clarity.addEventListener('click', () => {
-                if (clarity_list.style.display != 'block') {
-                    clarity_list.style.display = "block";
-                    clarityTimer = setTimeout(function () {
-                        clarity_list.style.display = "none";
-                    }, 5000);
-                }else{
-                    clarity_list.style.display = "none";
-                }
-            });
-            clarity_list.addEventListener('mouseenter', () => {
-                clarityTimer && clearTimeout(clarityTimer);
-            });
-            clarity_list.addEventListener('mouseleave', () => {
+        current_clarity.addEventListener('click', () => {
+            if (clarity_list.style.display != 'block') {
+                clarity_list.style.display = "block";
                 clarityTimer = setTimeout(function () {
                     clarity_list.style.display = "none";
                 }, 5000);
-            });
-
-            for (let i=0, l=clarity_list.childNodes.length; i < l ; i++) {
-                clarity_list.childNodes[i].addEventListener('click', function(){
-                    let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
-
-                    if (el.classList.contains('active')) {
-                        return;
-                    }
-                    for (let i=0, l=s.length; i<l; i++){
-                        if (s[i].dataset.clarity == clarity) {
-                            s[i].classList.add('active');
-                            continue;
-                        }
-                        s[i].classList.remove('active');
-                    }
-                    current_clarity.dataset.clarity = clarity;
-                    current_clarity.innerHTML = el.innerHTML;
-                    clarity_list.style.display = "none";
-                    clarityCall.call(this, clarity, el);
-                });
+            }else{
+                clarity_list.style.display = "none";
             }
+        });
+        clarity_list.addEventListener('mouseenter', () => {
+            clarityTimer && clearTimeout(clarityTimer);
+        });
+        clarity_list.addEventListener('mouseleave', () => {
+            clarityTimer = setTimeout(function () {
+                clarity_list.style.display = "none";
+            }, 5000);
+        });
+
+        for (let i=0, l=clarity_list.childNodes.length; i < l ; i++) {
+            clarity_list.childNodes[i].addEventListener('click', function(){
+                let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
+
+                if (el.classList.contains('active')) {
+                    return;
+                }
+                clarityCall.call(this, clarity, el);
+                // if (clarityCall.call(this, clarity, el)) {
+                //     //回调切换清晰度方法，返回结果为true，则更新视图
+                //     for (let i=0, l=s.length; i<l; i++){
+                //         if (s[i].dataset.clarity == clarity) {
+                //             s[i].classList.add('active');
+                //             continue;
+                //         }
+                //         s[i].classList.remove('active');
+                //     }
+                //     current_clarity.dataset.clarity = clarity;
+                //     current_clarity.innerHTML = el.innerHTML;
+                //     clarity_list.style.display = "none";
+                // }
+            });
         }
 
         const htmlEncode = (str) => {
@@ -1329,7 +1324,35 @@ class PaPlayer {
             });
         }
 
+        this.setClarity(this.option.video.clarity, this.option.video.current_clarity);
+
         index++;
+    }
+
+    setClarity(clarity, current_clarity) {
+        let switchClarity = this.element.getElementsByClassName('switch-clarity')[0];
+        let clarityCUR = this.element.getElementsByClassName('current_clarity')[0];
+        let clarityLIEL = this.element.getElementsByClassName('clarity_list')[0];
+        clarityLIEL.style.display = 'none';
+        for(let i=0, l=clarityLIEL.childNodes.length; i<l; i++){
+            clarityLIEL.childNodes[i].classList.remove('active');
+            clarityLIEL.childNodes[i].style.display = 'none';
+            clarityLIEL.childNodes[i].dataset.clarity = '';
+        }
+        for(let i in clarity) {
+            if (clarityLIEL.getElementsByClassName(i).length > 0){
+                clarityLIEL.getElementsByClassName(i)[0].style.display = 'block';
+                clarityLIEL.getElementsByClassName(i)[0].dataset.clarity = clarity[i];
+                !current_clarity && (current_clarity = i);
+            }
+        }
+        if (current_clarity && clarityLIEL.getElementsByClassName(current_clarity).length > 0) {
+            clarityLIEL.getElementsByClassName(current_clarity)[0].classList.add('active');
+            clarityCUR.innerHTML = clarityLIEL.getElementsByClassName(current_clarity)[0].innerHTML;
+            switchClarity.style.display = 'inline';
+            return;
+        }
+        switchClarity.style.display = 'none';
     }
 
     /**
@@ -1508,6 +1531,7 @@ class PaPlayer {
         }
         // also need try media type
         this.TestMediaType();
+        this.setClarity(video.clarity, video.current_clarity);
     }
 
     /**
