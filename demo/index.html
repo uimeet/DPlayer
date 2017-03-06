@@ -56,6 +56,12 @@
 <script src="../dist/PaPlayer.min.js"></script>
 <script>
     // Normal
+    var clarityMap = {'M3U8_LD':"LD", 'M3U8_SD':"SD", 'M3U8_HD':"HD"}; //播放顺序，并对应播放器的清晰度
+
+    var clarity = {};
+    for(var i in clarityMap){
+        clarity[clarityMap[i]] = i;
+    }
     var dp1 = new PaPlayer({
         element: document.getElementById('paplayer1'),
         autoplay: false,
@@ -66,14 +72,18 @@
         area:'300px', //有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
         hotkey: true,
         video: {
-            url: 'http://vodplaytest.mobandao.com/d461c6e62b5ad1ddf2177842ab24d696/58BA8DCF/vod/m3u8/42E0A279515C-2A226B-253F-F6AC-4F305C-BC6A9D27/ld/42E0A279515C-2A226B-253F-F6AC-4F305C-BC6A9D27.m3u8',
+            url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
             pic: 'http://devtest.qiniudn.com/若能绽放光芒.png',
-            clarity:{"LD": 'M3U8_LD', 'SD': 'M3U8_SD', "HD": 'M3U8_HD'}
+            clarity:clarity,
+            current_clarity:'SD'
         },
         clarityCall: function (clarity_tag, el) {
+            console.log(clarity_tag);
             dp1.switchVideo({
                 url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
-                pic: 'http://devtest.qiniudn.com/微小微-江南皮革厂倒闭了.jpg'
+                pic: 'http://devtest.qiniudn.com/微小微-江南皮革厂倒闭了.jpg',
+                clarity:clarity,
+                current_clarity:clarityMap[clarity_tag]
             });
         }
     });
