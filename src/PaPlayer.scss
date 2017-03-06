@@ -4,10 +4,18 @@
   user-select:none;
   line-height:1;
 
-  &:-webkit-full-screen {
+  &:-webkit-full-screen, &.full {
+    position:fixed;
     width:100%;
     height:100%;
+    top:0;
+    left:0;
     background:#000;
+    z-index: 100;
+
+    .paplayer-video-wrap{
+      height: 100% !important;
+    }
 
     .paplayer-danmaku {
       .paplayer-danmaku-top,
@@ -123,7 +131,7 @@
     width:100%;
     height:100%;
 
-	&.full { height:100% !important; }
+	&.full { height:100% !important;}
 
     .paplayer-video {
       width:100%;

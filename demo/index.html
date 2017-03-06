@@ -49,11 +49,12 @@
     <div class="paplayer" id="paplayer3"></div>
     <h3>FLV format support</h3>
     <div class="paplayer" id="paplayer4"></div>
+    <div style="height: 500px;"></div>
 </div>
 
 <script src="../plugin/flv.min.js"></script>
 <script src="../plugin/hls.min.js"></script>
-<script src="../dist/PaPlayer.min.js"></script>
+<script src="../dist/PaPlayer.min.js?10"></script>
 <script>
     // Normal
     var clarityMap = {'M3U8_LD':"LD", 'M3U8_SD':"SD", 'M3U8_HD':"HD"}; //播放顺序，并对应播放器的清晰度
@@ -69,7 +70,7 @@
         loop: true,
         screenshot: true,
         preload:'none', //auto|meta|none  , autoplay=true 忽略
-        area:'300px', //有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
+        area:'2.1rem', //有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
         hotkey: true,
         video: {
             url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',

@@ -176,13 +176,14 @@ class PaPlayer {
                 <video class="paplayer-video" ${this.option.video.pic ? `poster="${this.option.video.pic}"` : ``}
                     x5-video-player-type="h5"
                     x5-video-player-fullscreen="true"
+                    playsinline="true"
                     webkit-playsinline="true"
                     -webkit-playsinline="true"
                     x-webkit-airplay="true"
-                    playsinline="true"
                     ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
                     preload="${this.option.preload}"
                     src="${this.option.video.url}">
+                    <source src="${this.option.video.url}" type="video/mp4">
                 </video>
                 <div class="paplayer-danmaku">
                     <div class="paplayer-danmaku-item paplayer-danmaku-item--demo"></div>
@@ -1176,58 +1177,149 @@ class PaPlayer {
             }
         };
 
-        let isFull = false;
-        const playerFullSize = () => {
-            let pl = this.element.getElementsByClassName('paplayer-video-wrap')[0];
-            if (isFull) {
-                //取消全屏
-                pl.classList.remove('full');
-            }else{
-                //全屏
-                pl.classList.add('full');
-            }
-            isFull = !isFull;
+        const invokeFieldOrMethod = function (element, method) {
+            var usablePrefixMethod;
+            ["webkit", "moz", "ms", "o", ""].forEach(function (prefix) {
+                if (usablePrefixMethod) return;
+                if (prefix === "") {
+                    method = method.slice(0, 1).toLowerCase() + method.slice(1);
+                }
+                var typePrefixMethod = typeof element[prefix + method];
+                if (typePrefixMethod + "" !== "undefined") {
+                    if (typePrefixMethod === "function") {
+                        usablePrefixMethod = element[prefix + method]();
+                    } else {
+                        usablePrefixMethod = element[prefix + method];
+                    }
+                }
+            });
+
+            return usablePrefixMethod;
         };
 
-        this.element.addEventListener('fullscreenchange', () => {
-            playerFullSize();
-            resetAnimation();
-            // console.log(danContainer.offsetHeight);
-        });
-        this.element.addEventListener('mozfullscreenchange', () => {
-            playerFullSize();
-            resetAnimation();
-            // console.log(danContainer.offsetHeight);
-        });
-        this.element.addEventListener('webkitfullscreenchange', () => {
-            playerFullSize();
-            resetAnimation();
-            // console.log(danContainer.offsetHeight);
-        });
+
+        const launchFullscreen = () => {
+            if (this.element.requestFullscreen) {
+                this.element.requestFullscreen();
+            } else if (this.element.mozRequestFullScreen) {
+                this.element.mozRequestFullScreen();
+            } else if (this.element.msRequestFullscreen) {
+                this.element.msRequestFullscreen();
+            } else if (this.element.oRequestFullscreen) {
+                this.element.oRequestFullscreen();
+            } else if (this.element.webkitRequestFullscreen) {
+                this.element.webkitRequestFullScreen();
+            } else {
+                var docHtml = document.documentElement;
+                var docBody = document.body;
+                var videobox = this.element.getElementsByClassName('paplayer-video-wrap')[0];
+                var cssText = 'width:100%;height:100%;overflow:hidden;';
+                docHtml.style.cssText = cssText;
+                docBody.style.cssText = cssText;
+                videobox.style.cssText = cssText + ';' + 'margin:0px;padding:0px;';
+                document.IsFullScreen = true;
+            }
+        };
+
+        const exitFullscreen = () => {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.oRequestFullscreen) {
+                document.oCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else {
+                var docHtml = document.documentElement;
+                var docBody = document.body;
+                var videobox = this.element.getElementsByClassName('paplayer-video-wrap')[0];
+                docHtml.style.cssText = "";
+                docBody.style.cssText = "";
+                videobox.style.cssText = "";
+                document.IsFullScreen = false;
+            }
+        };
+
+        let isFull = false;
+        // const playerFullSize = () => {
+        //     let pl = this.element.getElementsByClassName('paplayer-video-wrap')[0];
+        //     if (isFull) {
+        //         //取消全屏
+        //         pl.classList.remove('full');
+        //     }else{
+        //         //全屏
+        //         pl.classList.add('full');
+        //     }
+        //     isFull = !isFull;
+        // };
+
+        // this.element.addEventListener('fullscreenchange', () => {
+        //     playerFullSize();
+        //     resetAnimation();
+        //     // console.log(danContainer.offsetHeight);
+        // });
+        // this.element.addEventListener('mozfullscreenchange', () => {
+        //     playerFullSize();
+        //     resetAnimation();
+        //     // console.log(danContainer.offsetHeight);
+        // });
+        // this.element.addEventListener('webkitfullscreenchange', () => {
+        //     playerFullSize();
+        //     resetAnimation();
+        //     // console.log(danContainer.offsetHeight);
+        // });
+
+
+
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
-            if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
-                if (this.element.requestFullscreen) {
-                    this.element.requestFullscreen();
-                }
-                else if (this.element.mozRequestFullScreen) {
-                    this.element.mozRequestFullScreen();
-                }
-                else if (this.element.webkitRequestFullscreen) {
-                    this.element.webkitRequestFullscreen();
-                }
+            // if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement
+            //     && !document.oFullscreenElement && !document.msFullscreenElement
+            // ) {
+            //     if (this.element.requestFullscreen) {
+            //         this.element.requestFullscreen();
+            //     }
+            //     else if (this.element.mozRequestFullScreen) {
+            //         this.element.mozRequestFullScreen();
+            //     }
+            //     else if (this.element.webkitRequestFullscreen) {
+            //         this.element.webkitRequestFullscreen();
+            //     }
+            // }
+            // else {
+            //     if (document.cancelFullScreen) {
+            //         document.cancelFullScreen();
+            //     }
+            //     else if (document.mozCancelFullScreen) {
+            //         document.mozCancelFullScreen();
+            //     }
+            //     else if (document.webkitCancelFullScreen) {
+            //         document.webkitCancelFullScreen();
+            //     }
+            // }
+            // let pl = this.element.getElementsByClassName('paplayer-video-wrap')[0];
+            // if (invokeFieldOrMethod(document, 'FullScreen') || invokeFieldOrMethod(document, 'IsFullScreen') || document.IsFullScreen) {
+            if (isFull) {
+                // pl.classList.remove('full');
+                // exitFullscreen();
+                document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
+                this.element.classList.remove('full');
+                // if (document.getElementsByTagName('body')[0].dataset.top) {
+                //     document.body.scrollTop = document.getElementsByTagName('body')[0].dataset.top;
+                // }
+            }else{
+                // pl.classList.add('full');
+                // launchFullscreen();
+                // document.getElementsByTagName('body')[0].dataset.top = document.body.scrollTop;
+                document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
+                document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
+                this.element.classList.add('full');
             }
-            else {
-                if (document.cancelFullScreen) {
-                    document.cancelFullScreen();
-                }
-                else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                }
-                else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen();
-                }
-            }
+            isFull = !isFull;
             resetAnimation();
+            return false;
         });
 
         /**
