@@ -404,7 +404,7 @@ class PaPlayer {
             const hr = parseInt(second / 3600);
             const min = parseInt((second - hr*3600) / 60);
             const sec = parseInt(second - hr*3600 - min*60);
-            return hr>0 ? add0(hr) + ':' + add0(min) + add0(sec): add0(min) + ':' + add0(sec);
+            return hr>0 ? add0(hr) + ':' + add0(min) + ':' + add0(sec): add0(min) + ':' + add0(sec);
         };
 
         /**
