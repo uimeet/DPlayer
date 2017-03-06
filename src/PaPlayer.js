@@ -181,8 +181,7 @@ class PaPlayer {
                     -webkit-playsinline="true"
                     x-webkit-airplay="true"
                     ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
-                    preload="${this.option.preload}"
-                    src="${this.option.video.url}">
+                    preload="${this.option.preload}">
                     <source src="${this.option.video.url}" type="video/mp4">
                 </video>
                 <div class="paplayer-danmaku">
@@ -1275,51 +1274,16 @@ class PaPlayer {
 
 
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
-            // if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement
-            //     && !document.oFullscreenElement && !document.msFullscreenElement
-            // ) {
-            //     if (this.element.requestFullscreen) {
-            //         this.element.requestFullscreen();
-            //     }
-            //     else if (this.element.mozRequestFullScreen) {
-            //         this.element.mozRequestFullScreen();
-            //     }
-            //     else if (this.element.webkitRequestFullscreen) {
-            //         this.element.webkitRequestFullscreen();
-            //     }
-            // }
-            // else {
-            //     if (document.cancelFullScreen) {
-            //         document.cancelFullScreen();
-            //     }
-            //     else if (document.mozCancelFullScreen) {
-            //         document.mozCancelFullScreen();
-            //     }
-            //     else if (document.webkitCancelFullScreen) {
-            //         document.webkitCancelFullScreen();
-            //     }
-            // }
-            // let pl = this.element.getElementsByClassName('paplayer-video-wrap')[0];
-            // if (invokeFieldOrMethod(document, 'FullScreen') || invokeFieldOrMethod(document, 'IsFullScreen') || document.IsFullScreen) {
             if (isFull) {
-                // pl.classList.remove('full');
-                // exitFullscreen();
                 document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
                 this.element.classList.remove('full');
-                // if (document.getElementsByTagName('body')[0].dataset.top) {
-                //     document.body.scrollTop = document.getElementsByTagName('body')[0].dataset.top;
-                // }
             }else{
-                // pl.classList.add('full');
-                // launchFullscreen();
-                // document.getElementsByTagName('body')[0].dataset.top = document.body.scrollTop;
                 document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
                 document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
                 this.element.classList.add('full');
             }
             isFull = !isFull;
             resetAnimation();
-            return false;
         });
 
         /**

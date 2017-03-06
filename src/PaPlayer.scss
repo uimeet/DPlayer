@@ -3,7 +3,18 @@
   overflow:hidden;
   user-select:none;
   line-height:1;
-
+  &.full {
+    position: fixed !important;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: 100;
+    .paplayer-video-wrap{
+      height: 100% !important;
+    }
+  }
   &:-webkit-full-screen, &.full {
     position:fixed;
     width:100%;
