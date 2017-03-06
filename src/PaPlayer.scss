@@ -242,7 +242,7 @@
 
     .paplayer-danloading {
       position:absolute;
-      top:50%;
+      top:20%;
       margin-top:-.07rem;
       width:100%;
       text-align:center;
@@ -571,7 +571,8 @@
         .paplayer-clarity-box {
           position:absolute;
           left:0;
-          bottom:.5rem;
+          bottom:.3rem;
+		  padding:.05rem 0 .02rem;
           background:rgba(28,28,28,.9);
           display:none;
         }
