@@ -5,11 +5,11 @@
     <title>PaPlayer Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-		*,::after,::before { box-sizing:border-box; }
-		html { font-size:calc(100vmin/3.75); }
+        *,::after,::before { box-sizing:border-box; }
+        html { font-size:calc(100vmin/3.75); }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-			margin:0; font-size:16px; 
+            margin:0; font-size:16px;
         }
         .container {
             margin-left: auto;
@@ -45,11 +45,6 @@
     <h3>Normal</h3>
     <div class="paplayer" id="paplayer1"></div>
     <button onclick="switchPaPlayer()">Switch Video</button>
-    <h3>Live Video (HTTP Live Streaming, M3U8 format) support</h3>
-    <div class="paplayer" id="paplayer3"></div>
-    <h3>FLV format support</h3>
-    <div class="paplayer" id="paplayer4"></div>
-    <div style="height: 500px;"></div>
 </div>
 
 <script src="../plugin/flv.min.js"></script>
@@ -109,48 +104,6 @@
             });
         }
     }
-
-    // Live Video (HTTP Live Streaming, M3U8 format) support
-    var dp3 = new PaPlayer({
-        element: document.getElementById('paplayer3'),
-        autoplay: false,
-        preload:'meta',
-        theme: '#FADFA3',
-        loop: false,
-        screenshot: true,
-        hotkey: true,
-        video: {
-            url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
-            pic: 'http://devtest.qiniudn.com/若能绽放光芒.png'
-        },
-        danmaku: {
-            id: '9E2E3368B56CDBB42',
-            api: 'https://api.prprpr.me/dplayer/',
-            token: 'tokendemo',
-            maximum: 3000
-        }
-    });
-
-    // FLV format support
-    var dp4 = new PaPlayer({
-        element: document.getElementById('paplayer4'),
-        autoplay: false,
-        preload:'auto',
-        theme: '#FADFA3',
-        loop: true,
-        screenshot: true,
-        hotkey: true,
-        video: {
-            url: 'http://devtest.qiniudn.com/【微小微】玖月奇迹－踩踩踩.flv',
-            pic: 'http://devtest.qiniudn.com/【微小微】玖月奇迹－踩踩踩.jpg'
-        },
-        danmaku: {
-            id: '9E2E3368B56CDBB43',
-            api: 'https://api.prprpr.me/dplayer/',
-            token: 'tokendemo',
-            maximum: 3000
-        }
-    });
 </script>
 </body>
 </html>

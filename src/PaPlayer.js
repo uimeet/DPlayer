@@ -189,7 +189,7 @@ class PaPlayer {
                 </div>
                 <div class="paplayer-bezel">
                     <span class="paplayer-bezel-icon"></span>
-                    ${this.option.danmaku ? `<span class="paplayer-danloading">${getTran('Danmaku is loading')}</span>` : ``}
+                    <span class="paplayer-danloading" ${this.option.danmaku ? `` :  `style="display:none"`}>${getTran('Danmaku is loading')}</span>
                     <span class="diplayer-loading-icon">
                         <svg height="100%" version="1.1" viewBox="0 0 22 22" width="100%">
                             <svg x="7" y="1">
@@ -456,8 +456,9 @@ class PaPlayer {
         const pbar = this.element.getElementsByClassName('paplayer-bar-wrap')[0];
         let barWidth;
 
-        if (this.option.danmaku) {
-            this.video.addEventListener('seeking', () => {
+        // fix switch video danmaku not display correctly when replay
+        this.video.addEventListener('seeking', () => {
+            if (this.option.danmaku) {
                 for (let i = 0; i < this.dan.length; i++) {
                     if (this.dan[i].time >= this.video.currentTime) {
                         this.danIndex = i;
@@ -465,8 +466,8 @@ class PaPlayer {
                     }
                     this.danIndex = this.dan.length;
                 }
-            });
-        }
+            }
+        });
 
         let lastPlayPos = 0;
         let currentPlayPos = 0;
@@ -944,6 +945,12 @@ class PaPlayer {
         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
 
         const danmakuIn = (text, color, type) => {
+            if(color == ''){
+                color = '#fff'
+            }
+            if(type == ''){
+                type = 'right'
+            }
             danWidth = danContainer.offsetWidth;
             danHeight = danContainer.offsetHeight;
             itemY = parseInt(danHeight / itemHeight);
@@ -975,7 +982,7 @@ class PaPlayer {
                     item.style.bottom = itemHeight * getTunnel(item, type) + 'px';
                     break;
                 default:
-                    console.error(`Can't handled danmaku type: ${type}`);
+                    console.error(`Can't handled danmaku:`,text, color, type);
             }
 
             // insert
@@ -1243,35 +1250,6 @@ class PaPlayer {
         };
 
         let isFull = false;
-        // const playerFullSize = () => {
-        //     let pl = this.element.getElementsByClassName('paplayer-video-wrap')[0];
-        //     if (isFull) {
-        //         //取消全屏
-        //         pl.classList.remove('full');
-        //     }else{
-        //         //全屏
-        //         pl.classList.add('full');
-        //     }
-        //     isFull = !isFull;
-        // };
-
-        // this.element.addEventListener('fullscreenchange', () => {
-        //     playerFullSize();
-        //     resetAnimation();
-        //     // console.log(danContainer.offsetHeight);
-        // });
-        // this.element.addEventListener('mozfullscreenchange', () => {
-        //     playerFullSize();
-        //     resetAnimation();
-        //     // console.log(danContainer.offsetHeight);
-        // });
-        // this.element.addEventListener('webkitfullscreenchange', () => {
-        //     playerFullSize();
-        //     resetAnimation();
-        //     // console.log(danContainer.offsetHeight);
-        // });
-
-
 
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
             if (isFull) {
@@ -1584,11 +1562,16 @@ class PaPlayer {
             this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
             this.option.danmaku = danmaku;
             this.readDanmaku();
+            this.element.classList.remove('paplayer-no-danmaku');
+        }else {
+            this.element.classList.add('paplayer-no-danmaku');
+            delete this.option.danmaku;
         }
+
         // also need try media type
         this.TestMediaType();
         this.setClarity(video.clarity, video.current_clarity);
-    }
+}
 
     /**
      * try other media types
