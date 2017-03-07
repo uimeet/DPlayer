@@ -458,7 +458,7 @@ class PaPlayer {
 
         // fix switch video danmaku not display correctly when replay
         this.video.addEventListener('seeking', () => {
-            if (this.option.danmaku) {
+            if (this.option.danmaku && this.dan) {
                 for (let i = 0; i < this.dan.length; i++) {
                     if (this.dan[i].time >= this.video.currentTime) {
                         this.danIndex = i;
@@ -606,12 +606,12 @@ class PaPlayer {
         /**
          * auto hide controller
          */
-        let hideTime = 0;
+        this.hideTime = 0;
         if (!isMobile) {
             const hideController = () => {
                 this.element.classList.remove('paplayer-hide-controller');
-                clearTimeout(hideTime);
-                hideTime = setTimeout(() => {
+                clearTimeout(this.hideTime);
+                this.hideTime = setTimeout(() => {
                     if (this.video.played.length) {
                         this.element.classList.add('paplayer-hide-controller');
                         closeSetting();
@@ -854,8 +854,10 @@ class PaPlayer {
 
         // show video loaded bar: to inform interested parties of progress downloading the media
         this.video.addEventListener('progress', () => {
-            const percentage = this.video.buffered.length ? this.video.buffered.end(this.video.buffered.length - 1) / this.video.duration : 0;
-            this.updateBar('loaded', percentage, 'width');
+            if(this.video){
+                const percentage = this.video.buffered.length ? this.video.buffered.end(this.video.buffered.length - 1) / this.video.duration : 0;
+                this.updateBar('loaded', percentage, 'width');
+            }
         });
 
         // video download error: an error occurs
@@ -1133,7 +1135,7 @@ class PaPlayer {
             commentBox.classList.add('paplayer-comment-box-open');
             mask.classList.add('paplayer-mask-show');
             disableHide = setInterval(() => {
-                clearTimeout(hideTime);
+                clearTimeout(this.hideTime);
             }, 1000);
             this.element.classList.add('paplayer-show-controller');
         };
@@ -1267,7 +1269,7 @@ class PaPlayer {
         /**
          * hot key
          */
-        const handleKeyDown = (e) => {
+        this.handleKeyDown = (e) => {
             const tag = document.activeElement.tagName.toUpperCase();
             const editable = document.activeElement.getAttribute('contenteditable');
             if (tag !== 'INPUT' && tag !== 'TEXTAREA' && editable !== '' && editable !== 'true') {
@@ -1300,7 +1302,7 @@ class PaPlayer {
             }
         };
         if (this.option.hotkey) {
-            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keydown', this.handleKeyDown);
         }
 
         /**
@@ -1571,7 +1573,21 @@ class PaPlayer {
         // also need try media type
         this.TestMediaType();
         this.setClarity(video.clarity, video.current_clarity);
-}
+    }
+
+    destroy(){
+        console.log('player_destroy');
+        this.pause();
+        if (this.option.hotkey) {
+            document.removeEventListener('keydown', this.handleKeyDown);
+        }
+        clearTimeout(this.hideTime);
+        clearInterval(this.playedTime);
+        this.element.innerHTML = '';
+        for(var obj in this){
+            this[obj] = null;
+        }
+    }
 
     /**
      * try other media types

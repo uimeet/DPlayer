@@ -45,6 +45,7 @@
     <h3>Normal</h3>
     <div class="paplayer" id="paplayer1"></div>
     <button onclick="switchPaPlayer()">Switch Video</button>
+    <button onclick="dp1.destroy()">destroy Video</button>
 </div>
 
 <script src="../plugin/flv.min.js"></script>
@@ -97,7 +98,6 @@
                 });
         }
         else {
-            console.log(123);
             dp1.switchVideo({
                 url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
                 pic: 'http://devtest.qiniudn.com/若能绽放光芒.png'
