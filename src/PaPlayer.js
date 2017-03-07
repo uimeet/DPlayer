@@ -169,6 +169,9 @@ class PaPlayer {
         if (!this.option.danmaku) {
             this.element.classList.add('paplayer-no-danmaku');
         }
+        if (this.option.preload == 'none') {
+            this.element.classList.add('paplayer-hide-controller');
+        }
 
         this.element.innerHTML = `
             <div class="paplayer-mask"></div>
@@ -327,9 +330,9 @@ class PaPlayer {
                 </div>
             </div>
             <div class="paplayer-menu">
-                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="http://www.baidu.com/">${getTran('About author')}</a></span></div>
-                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.baidu.com/">${getTran('PaPlayer feedback')}</a></span></div>
-                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.baidu.com/">${getTran('About PaPlayer')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="http://www.pajiji.com/">${getTran('About author')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.pajiji.com/">${getTran('PaPlayer feedback')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.pajiji.com/">${getTran('About PaPlayer')}</a></span></div>
             </div>
         `;
 
