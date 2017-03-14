@@ -486,41 +486,48 @@ class PaPlayer {
         this.setTime = () => {
             this.playedTime = setInterval(() => {
                 // whether the video is buffering
-                currentPlayPos = this.video.currentTime;
-                if (!bufferingDetected
-                    && currentPlayPos < (lastPlayPos + 0.01)
-                    && !this.video.paused) {
+                if (this.video.readyState != 4) {
                     this.element.classList.add('paplayer-loading');
-                    bufferingDetected = true;
-                }
-                if (bufferingDetected
-                    && currentPlayPos > (lastPlayPos + 0.01)
-                    && !this.video.paused) {
-                    this.element.classList.remove('paplayer-loading');
                     bufferingDetected = false;
+                    return;
                 }
-                lastPlayPos = currentPlayPos;
+                this.element.classList.remove('paplayer-loading');
+                bufferingDetected = true;
+                if (this.startTime) {
+                    this.video.currentTime = this.startTime;
+                    this.startTime = null;
+                }
+                // currentPlayPos = this.video.currentTime;
+                // if (!bufferingDetected
+                //     && currentPlayPos < (lastPlayPos + 0.01)
+                //     && !this.video.paused) {
+                //     this.element.classList.add('paplayer-loading');
+                //     bufferingDetected = true;
+                // }
+                // if (bufferingDetected
+                //     && currentPlayPos > (lastPlayPos + 0.01)
+                //     && !this.video.paused) {
+                //     this.element.classList.remove('paplayer-loading');
+                //     bufferingDetected = false;
+                // }
+                // lastPlayPos = currentPlayPos;
 
                 this.updateBar('played', this.video.currentTime / this.video.duration, 'width');
                 this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = secondToTime(this.video.currentTime);
                 this.trigger('playing');
-            }, 100);
+            }, 1000);
             if (this.option.danmaku && showdan) {
                 danmakuTime = setInterval(() => {
-                    if (this.video.readyState != 4) {
+                    if (this.video.readyState != 4 || !bufferingDetected) {
                         return;
-                    }
-                    if (this.startTime) {
-                        this.video.currentTime = this.startTime;
-                        this.startTime = null;
-                        this.resetDanIndex();
                     }
                     let item = this.dan[this.danIndex];
                     while (item && this.video.currentTime >= parseFloat(item.time)) {
+                        // console.log(this.video.currentTime, item.time);
                         danmakuIn(item.text, item.color, item.type);
                         item = this.dan[++this.danIndex];
                     }
-                }, 0);
+                }, 100);
             }
         };
         this.clearTime = () => {
@@ -765,13 +772,15 @@ class PaPlayer {
                     if (this.option.danmaku) {
                         this.resetDanIndex();
                         danmakuTime = setInterval(() => {
+                            if (this.video.readyState != 4 || !bufferingDetected) {
+                                return;
+                            }
                             let item = this.dan[this.danIndex];
                             while (item && this.video.currentTime >= parseFloat(item.time)) {
-                                console.log('764','danIndex',this.danIndex,'time',item.time);
                                 danmakuIn(item.text, item.color, item.type);
                                 item = this.dan[++this.danIndex];
                             }
-                        }, 0);
+                        }, 100);
                     }
                 }
                 else {
