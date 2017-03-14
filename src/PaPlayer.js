@@ -506,8 +506,15 @@ class PaPlayer {
                 this.trigger('playing');
             }, 100);
             if (this.option.danmaku && showdan) {
-                this.resetDanIndex();
                 danmakuTime = setInterval(() => {
+                    if (this.video.readyState != 4) {
+                        return;
+                    }
+                    if (this.startTime) {
+                        this.video.currentTime = this.startTime;
+                        this.startTime = null;
+                        this.resetDanIndex();
+                    }
                     let item = this.dan[this.danIndex];
                     while (item && this.video.currentTime >= parseFloat(item.time)) {
                         danmakuIn(item.text, item.color, item.type);
@@ -760,6 +767,7 @@ class PaPlayer {
                         danmakuTime = setInterval(() => {
                             let item = this.dan[this.danIndex];
                             while (item && this.video.currentTime >= parseFloat(item.time)) {
+                                console.log('764','danIndex',this.danIndex,'time',item.time);
                                 danmakuIn(item.text, item.color, item.type);
                                 item = this.dan[++this.danIndex];
                             }
@@ -1396,6 +1404,17 @@ class PaPlayer {
             return;
         }
         switchClarity.style.display = 'none';
+    }
+
+    /**
+     * 设置开始播放时间
+     * @param time
+     */
+    setStartTime(time) {
+        time = parseFloat(time, 10);
+        if (!isNaN(time)) {
+            this.startTime = time;
+        }
     }
 
     /**

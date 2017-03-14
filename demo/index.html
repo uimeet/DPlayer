@@ -79,6 +79,12 @@
             clarity:clarity,
             current_clarity:'SD'
         },
+        danmaku: {
+            id: '9E2E3368B56CDBB43',
+            api: '/demo/barrages.txt',
+            token: 'tokendemo',
+            maximum: 3000
+        },
         clarityCall: function (clarity_tag, el) {
             console.log(clarity_tag);
             dp1.switchVideo({
@@ -89,6 +95,16 @@
             });
         }
     });
+    if(true){
+        var starttime = 74;
+        console.log('time to:'+starttime);
+        dp1.setStartTime(starttime);
+    }
+
+//    dp1.on('playing', function () {
+//       console.log(dp1.video.currentTime);
+//    });
+
     function switchPaPlayer() {
         if (typeof dp1.option.danmaku == 'undefined' ) {
             dp1.switchVideo({
