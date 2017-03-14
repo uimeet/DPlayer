@@ -60,14 +60,15 @@ class PaPlayer {
             element: document.getElementsByClassName('paplayer')[0],
             autoplay: false,
             theme: '#b7daff',
-            loop: false,
+            loop: Boolean(localStorage.getItem('paplayer-loop') == "true" ? true : false),
+            showdan: Boolean(localStorage.getItem('paplayer-showdan') == "false" ? false : true),
             lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
             screenshot: false,
             hotkey: true,
             preload: 'auto',
             apiBackend: defaultApiBackend,
-            clarity:null,
-            area:false,
+            clarity: null,
+            area: false,
             clarityCall: function (clarity_tag, el) {
                 console.log('未设置clarityCall回调：option.apiBackend(clarity_tag, el)', clarity_tag);
                 return true;
@@ -721,8 +722,8 @@ class PaPlayer {
         });
 
         let loop = this.option.loop;
+        let showdan = this.option.showdan;
         const danContainer = this.element.getElementsByClassName('paplayer-danmaku')[0];
-        let showdan = true;
         const settingEvent = () => {
             // loop control
             const loopEle = this.element.getElementsByClassName('paplayer-setting-loop')[0];
@@ -740,6 +741,7 @@ class PaPlayer {
                     loop = false;
                     this.video.loop = loop;
                 }
+                localStorage.setItem('paplayer-loop', loop);
                 closeSetting();
             });
 
@@ -777,6 +779,7 @@ class PaPlayer {
                         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
                     }
                 }
+                localStorage.setItem('paplayer-showdan', showdan);
                 closeSetting();
             });
 
@@ -795,7 +798,7 @@ class PaPlayer {
                 }
             });
 
-            if (this.option.danmaku) {
+            // if (this.option.danmaku) { //
                 // danmaku opacity
                 bar.danmakuBar = this.element.getElementsByClassName('paplayer-danmaku-bar-inner')[0];
                 const danmakuBarWrapWrap = this.element.getElementsByClassName('paplayer-danmaku-bar-wrap')[0];
@@ -841,7 +844,7 @@ class PaPlayer {
                     document.addEventListener('mouseup', danmakuUp);
                     danmakuSettingBox.classList.add('paplayer-setting-danmaku-active');
                 });
-            }
+            // }
         };
         settingEvent();
 
