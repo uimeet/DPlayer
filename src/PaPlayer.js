@@ -462,13 +462,7 @@ class PaPlayer {
         // fix switch video danmaku not display correctly when replay
         this.video.addEventListener('seeking', () => {
             if (this.option.danmaku && this.dan) {
-                for (let i = 0; i < this.dan.length; i++) {
-                    if (this.dan[i].time >= this.video.currentTime) {
-                        this.danIndex = i;
-                        return;
-                    }
-                    this.danIndex = this.dan.length;
-                }
+                this.resetDanIndex();
             }
         });
 
@@ -476,6 +470,18 @@ class PaPlayer {
         let currentPlayPos = 0;
         let bufferingDetected = false;
         let danmakuTime;
+
+        this.resetDanIndex = ()=>{
+            for (let i = 0; i < this.dan.length; i++) {
+                if (this.dan[i].time >= this.video.currentTime) {
+                    this.danIndex = i;
+                    break;
+                }
+                this.danIndex = this.dan.length;
+            }
+
+        };
+
         this.setTime = () => {
             this.playedTime = setInterval(() => {
                 // whether the video is buffering
@@ -499,6 +505,7 @@ class PaPlayer {
                 this.trigger('playing');
             }, 100);
             if (this.option.danmaku && showdan) {
+                this.resetDanIndex();
                 danmakuTime = setInterval(() => {
                     let item = this.dan[this.danIndex];
                     while (item && this.video.currentTime >= parseFloat(item.time)) {
@@ -747,13 +754,7 @@ class PaPlayer {
                 if (showDanToggle.checked) {
                     showdan = true;
                     if (this.option.danmaku) {
-                        for (let i = 0; i < this.dan.length; i++) {
-                            if (this.dan[i].time >= this.video.currentTime) {
-                                this.danIndex = i;
-                                break;
-                            }
-                            this.danIndex = this.dan.length;
-                        }
+                        this.resetDanIndex();
                         danmakuTime = setInterval(() => {
                             let item = this.dan[this.danIndex];
                             while (item && this.video.currentTime >= parseFloat(item.time)) {
@@ -1410,14 +1411,14 @@ class PaPlayer {
             // this.playButton.innerHTML = this.getSVG('pause');
             this.playButton.classList.add('pause');
             this.goplayBtn.style.display = 'none';
-
-            this.video.play();
             if (this.playedTime) {
                 this.clearTime();
             }
             this.setTime();
             this.element.classList.add('paplayer-playing');
+            this.video.play();
             this.trigger('play');
+
             setTimeout(() => {
                 this.element.classList.add('paplayer-hide-controller');
             }, 2000);
