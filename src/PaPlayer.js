@@ -1590,21 +1590,21 @@ class PaPlayer {
      * @param start_time
      */
     switchClarity(video) {
-        let start_time = this.video.currentTime, poster;
-        const canvas = document.createElement("canvas");
-        canvas.width = this.video.videoWidth;
-        canvas.height = this.video.videoHeight;
-        canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
-        poster = canvas.toDataURL("image/png");
+        let start_time = this.video.currentTime, poster="";
 
-        this.pause();
+        // const canvas = document.createElement("canvas");
+        // canvas.width = this.video.videoWidth;
+        // canvas.height = this.video.videoHeight;
+        // canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
+        // poster = canvas.toDataURL("image/png");
+
         this.option.video.url = this.video.src = video.url;
-
-        this.video.poster = poster;
+        // this.video.poster = poster;
         this.video.currentTime = 0;
         if (start_time > 0) {
             this.setStartTime(start_time);
         }
+        this.pause();
         this.TestMediaType();
         this.setClarity(video.clarity, video.current_clarity);
     }
