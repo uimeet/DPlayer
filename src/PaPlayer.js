@@ -979,6 +979,10 @@ class PaPlayer {
 
         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
 
+        this.textScale = 1;
+        if(typeof window.devicePixelRatio != 'undefined'){
+            this.textScale = .618 + .382 / (2 * window.devicePixelRatio);
+        }
         /***
          * 弹幕库装载
          * @param text 文字
@@ -1007,6 +1011,9 @@ class PaPlayer {
             item.style.opacity = danOpacity;
             item.style.color = color;
             item.style.fontSize = size + 'px';
+            if(isMobile){
+                item.style.fontSize = this.textScale * parseInt(size, 10) + 'px';
+            }
             item.addEventListener('animationend', () => {
                 danContainer.removeChild(item);
             });
