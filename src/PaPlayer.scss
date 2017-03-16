@@ -980,7 +980,7 @@
     }
 
     .paplayer-menu-item {
-      height:.3rem;
+      /*height:.3rem;*/
       padding:.05rem .1rem;
       cursor:pointer;
 
@@ -993,6 +993,7 @@
         font-size:.13rem;
         display:inline-block;
         vertical-align:middle;
+        width: 100%;
       }
     }
   }

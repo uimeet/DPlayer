@@ -62,7 +62,8 @@ class PaPlayer {
             theme: '#b7daff',
             loop: Boolean(localStorage.getItem('paplayer-loop') == "true" ? true : false),
             showdan: Boolean(localStorage.getItem('paplayer-showdan') == "false" ? false : true),
-            lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
+            // lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
+            lang: 'zh',
             screenshot: false,
             hotkey: true,
             preload: 'auto',
@@ -92,7 +93,7 @@ class PaPlayer {
             let html = `<div class="switch-clarity" style="display: none;">
                         <button class="paplayer-icon paplayer-clarity-icon current_clarity"></button>
                         <div class="paplayer-clarity-box clarity_list">`;
-            for (var i in clarityArr) {
+            for (let i in clarityArr) {
                 html += `<button class="paplayer-icon paplayer-clarity-icon ${i}" style="display: none">${clarityArr[i]}</button>`;
             }
 
@@ -109,6 +110,7 @@ class PaPlayer {
             'About author': '关于作者',
             'PaPlayer feedback': '播放器意见反馈',
             'About PaPlayer': '关于 PaPlayer',
+            'Close Menu': '关闭',
             'Loop': '洗脑循环',
             'Speed': '速度',
             'Opacity for danmaku': '弹幕透明度',
@@ -331,9 +333,9 @@ class PaPlayer {
                 </div>
             </div>
             <div class="paplayer-menu">
-                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="http://www.pajiji.com/">${getTran('About author')}</a></span></div>
-                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.pajiji.com/">${getTran('PaPlayer feedback')}</a></span></div>
-                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="https://www.pajiji.com/">${getTran('About PaPlayer')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="http://www.pajiji.com/">${getTran('PaPlayer feedback')}</a></span></div>
+                <div class="paplayer-menu-item"><span class="paplayer-menu-label"><a target="_blank" href="http://www.pajiji.com/">${getTran('About PaPlayer')}</a></span></div>
+                <div class="paplayer-menu-item close_menu"><span class="paplayer-menu-label"><a href="javascript:;">${getTran('Close Menu')}</a></span></div>
             </div>
         `;
 
@@ -938,6 +940,13 @@ class PaPlayer {
             return (danWidth + width) / 5;
         };
 
+        /***
+         * 或者弹幕占位
+         * @param ele 弹幕
+         * @param type 弹幕类型
+         * @param width 弹幕实际宽度
+         * @returns {number}
+         */
         const getTunnel = (ele, type, width) => {
             const tmp = danWidth / danSpeed(width);
 
@@ -970,6 +979,14 @@ class PaPlayer {
 
         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
 
+        /***
+         * 弹幕库装载
+         * @param text 文字
+         * @param color 颜色
+         * @param type 类型
+         * @param size 字体大小
+         * @returns {Element}
+         */
         const danmakuIn = (text, color, type, size) => {
             if(color == ''){
                 color = '#fff'
@@ -1012,7 +1029,7 @@ class PaPlayer {
                     item.style.bottom = itemHeight * getTunnel(item, type) + 'px';
                     break;
                 default:
-                    console.error(`Can't handled danmaku:`,text, color, type);
+                    console.error(`Can't handled danmaku:`,text, color, type, size);
             }
 
             // insert
@@ -1214,72 +1231,6 @@ class PaPlayer {
             }
         };
 
-        const invokeFieldOrMethod = function (element, method) {
-            var usablePrefixMethod;
-            ["webkit", "moz", "ms", "o", ""].forEach(function (prefix) {
-                if (usablePrefixMethod) return;
-                if (prefix === "") {
-                    method = method.slice(0, 1).toLowerCase() + method.slice(1);
-                }
-                var typePrefixMethod = typeof element[prefix + method];
-                if (typePrefixMethod + "" !== "undefined") {
-                    if (typePrefixMethod === "function") {
-                        usablePrefixMethod = element[prefix + method]();
-                    } else {
-                        usablePrefixMethod = element[prefix + method];
-                    }
-                }
-            });
-
-            return usablePrefixMethod;
-        };
-
-
-        const launchFullscreen = () => {
-            if (this.element.requestFullscreen) {
-                this.element.requestFullscreen();
-            } else if (this.element.mozRequestFullScreen) {
-                this.element.mozRequestFullScreen();
-            } else if (this.element.msRequestFullscreen) {
-                this.element.msRequestFullscreen();
-            } else if (this.element.oRequestFullscreen) {
-                this.element.oRequestFullscreen();
-            } else if (this.element.webkitRequestFullscreen) {
-                this.element.webkitRequestFullScreen();
-            } else {
-                var docHtml = document.documentElement;
-                var docBody = document.body;
-                var videobox = this.element.getElementsByClassName('paplayer-video-wrap')[0];
-                var cssText = 'width:100%;height:100%;overflow:hidden;';
-                docHtml.style.cssText = cssText;
-                docBody.style.cssText = cssText;
-                videobox.style.cssText = cssText + ';' + 'margin:0px;padding:0px;';
-                document.IsFullScreen = true;
-            }
-        };
-
-        const exitFullscreen = () => {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.oRequestFullscreen) {
-                document.oCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else {
-                var docHtml = document.documentElement;
-                var docBody = document.body;
-                var videobox = this.element.getElementsByClassName('paplayer-video-wrap')[0];
-                docHtml.style.cssText = "";
-                docBody.style.cssText = "";
-                videobox.style.cssText = "";
-                document.IsFullScreen = false;
-            }
-        };
-
         let isFull = false;
 
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
@@ -1367,6 +1318,10 @@ class PaPlayer {
 
                 mask.classList.add('paplayer-mask-show');
                 mask.addEventListener('click', () => {
+                    mask.classList.remove('paplayer-mask-show');
+                    menu.classList.remove('paplayer-menu-show');
+                });
+                this.element.getElementsByClassName('close_menu')[0].addEventListener('click', () => {
                     mask.classList.remove('paplayer-mask-show');
                     menu.classList.remove('paplayer-menu-show');
                 });
@@ -1624,7 +1579,7 @@ class PaPlayer {
         clearTimeout(this.hideTime);
         clearInterval(this.playedTime);
         this.element.innerHTML = '';
-        for(var obj in this){
+        for(let obj in this){
             this[obj] = null;
         }
     }
