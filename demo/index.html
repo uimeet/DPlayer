@@ -9,7 +9,7 @@
 		html { font-size:calc(100vmin/3.75); }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-			margin:0; font-size:16px; 
+			margin:0; font-size:16px;
         }
         .container {
             margin-left: auto;
@@ -87,16 +87,19 @@
         },
         clarityCall: function (clarity_tag, el) {
             console.log(clarity_tag);
-            dp1.switchVideo({
+            dp1.switchClarity({
                 url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
                 pic: 'http://devtest.qiniudn.com/微小微-江南皮革厂倒闭了.jpg',
                 clarity:clarity,
                 current_clarity:clarityMap[clarity_tag]
             });
+            setTimeout(function () {
+                dp1.play();
+            }, 1000)
         }
     });
     if(true){
-        var starttime = 74;
+        var starttime = 180;
         console.log('time to:'+starttime);
         dp1.setStartTime(starttime);
     }
@@ -112,18 +115,24 @@
                     pic: 'http://devtest.qiniudn.com/微小微-江南皮革厂倒闭了.jpg'
                 },
                 {
-                    id: '9E2E3368B56CDBB42',
+                    id: '9E2E3368B56CDBB4',
                     api: 'https://api.prprpr.me/dplayer/',
                     token: 'tokendemo',
                     maximum: 3000
-                });
+                },180);
         }
         else {
             console.log(123);
             dp1.switchVideo({
                 url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
                 pic: 'http://devtest.qiniudn.com/若能绽放光芒.png'
-            });
+            },
+                {
+                    id: '9E2E3368B56CDBB4',
+                    api: 'https://api.prprpr.me/dplayer/',
+                    token: 'tokendemo',
+                    maximum: 3000
+                },180);
         }
     }
 

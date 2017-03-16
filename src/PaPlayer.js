@@ -486,6 +486,14 @@ class PaPlayer {
         this.setTime = () => {
             this.playedTime = setInterval(() => {
                 // whether the video is buffering
+                if (this.startTime && this.video.readyState >=2) {
+                    this.video.currentTime = this.startTime;
+                    this.startTime = null;
+                    this.option.danmaku && this.resetDanIndex();
+                    this.element.classList.add('paplayer-loading');
+                    bufferingDetected = false;
+                    return;
+                }
                 if (this.video.readyState != 4) {
                     this.element.classList.add('paplayer-loading');
                     bufferingDetected = false;
@@ -493,10 +501,6 @@ class PaPlayer {
                 }
                 this.element.classList.remove('paplayer-loading');
                 bufferingDetected = true;
-                if (this.startTime) {
-                    this.video.currentTime = this.startTime;
-                    this.startTime = null;
-                }
                 // currentPlayPos = this.video.currentTime;
                 // if (!bufferingDetected
                 //     && currentPlayPos < (lastPlayPos + 0.01)
@@ -515,7 +519,7 @@ class PaPlayer {
                 this.updateBar('played', this.video.currentTime / this.video.duration, 'width');
                 this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = secondToTime(this.video.currentTime);
                 this.trigger('playing');
-            }, 1000);
+            }, 200);
             if (this.option.danmaku && showdan) {
                 danmakuTime = setInterval(() => {
                     if (this.video.readyState != 4 || !bufferingDetected) {
@@ -1583,14 +1587,16 @@ class PaPlayer {
      * @param {Object} video - new video info
      * @param {Object} danmaku - new danmaku info
      */
-    switchVideo(video, danmaku) {
+    switchVideo(video, danmaku, start_time) {
         this.option.video.url = this.video.src = video.url;
         this.video.poster = video.pic ? video.pic : '';
         this.video.currentTime = 0;
+        if (start_time) {
+            this.setStartTime(start_time);
+        }
         this.pause();
         if (danmaku) {
             this.dan = [];
-            this.danIndex = 0;
             this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'block';
             this.updateBar('played', 0, 'width');
             this.updateBar('loaded', 0, 'width');
@@ -1603,6 +1609,7 @@ class PaPlayer {
             };
             this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
             this.option.danmaku = danmaku;
+            this.danIndex = 0;
             this.readDanmaku();
             this.element.classList.remove('paplayer-no-danmaku');
         }else {
@@ -1611,6 +1618,23 @@ class PaPlayer {
         }
 
         // also need try media type
+        this.TestMediaType();
+        this.setClarity(video.clarity, video.current_clarity);
+    }
+
+    /**
+     * 切换清晰度
+     * @param video
+     * @param start_time
+     */
+    switchClarity(video) {
+        let start_time = this.video.currentTime;
+        this.pause();
+        this.option.video.url = this.video.src = video.url;
+        this.video.currentTime = 0;
+        if (start_time > 0) {
+            this.setStartTime(start_time);
+        }
         this.TestMediaType();
         this.setClarity(video.clarity, video.current_clarity);
     }
