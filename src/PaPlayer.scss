@@ -165,7 +165,7 @@
       cursor:default;
       white-space:nowrap;
       font-weight:bolder;
-      text-shadow:.05rem .05rem .05rem rgba(0,0,0,.5);
+      text-shadow: rgb(0, 0, 0) 1px 0px 1px, rgb(0, 0, 0) 0px 1px 1px, rgb(0, 0, 0) 0px -1px 1px, rgb(0, 0, 0) -1px 0px 1px;
 
       &--demo {
         position:absolute;

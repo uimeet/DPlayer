@@ -524,7 +524,7 @@ class PaPlayer {
                     let item = this.dan[this.danIndex];
                     while (item && this.video.currentTime >= parseFloat(item.time)) {
                         // console.log(this.video.currentTime, item.time);
-                        danmakuIn(item.text, item.color, item.type);
+                        danmakuIn(item.text, item.color, item.type, item.size);
                         item = this.dan[++this.danIndex];
                     }
                 }, 100);
@@ -777,7 +777,7 @@ class PaPlayer {
                             }
                             let item = this.dan[this.danIndex];
                             while (item && this.video.currentTime >= parseFloat(item.time)) {
-                                danmakuIn(item.text, item.color, item.type);
+                                danmakuIn(item.text, item.color, item.type, item.size);
                                 item = this.dan[++this.danIndex];
                             }
                         }, 100);
@@ -815,7 +815,7 @@ class PaPlayer {
                 }
             });
 
-            // if (this.option.danmaku) { //
+            if (this.option.danmaku) { //
                 // danmaku opacity
                 bar.danmakuBar = this.element.getElementsByClassName('paplayer-danmaku-bar-inner')[0];
                 const danmakuBarWrapWrap = this.element.getElementsByClassName('paplayer-danmaku-bar-wrap')[0];
@@ -861,7 +861,7 @@ class PaPlayer {
                     document.addEventListener('mouseup', danmakuUp);
                     danmakuSettingBox.classList.add('paplayer-setting-danmaku-active');
                 });
-            // }
+            }
         };
         settingEvent();
 
@@ -970,12 +970,15 @@ class PaPlayer {
 
         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
 
-        const danmakuIn = (text, color, type) => {
+        const danmakuIn = (text, color, type, size) => {
             if(color == ''){
                 color = '#fff'
             }
             if(type == ''){
                 type = 'right'
+            }
+            if(typeof size == 'undefined' || size == ''){
+                size = '25'
             }
             danWidth = danContainer.offsetWidth;
             danHeight = danContainer.offsetHeight;
@@ -986,6 +989,7 @@ class PaPlayer {
             item.innerHTML = text;
             item.style.opacity = danOpacity;
             item.style.color = color;
+            item.style.fontSize = size + 'px';
             item.addEventListener('animationend', () => {
                 danContainer.removeChild(item);
             });
@@ -1115,11 +1119,12 @@ class PaPlayer {
             const danmakuData = {
                 token: this.option.danmaku.token,
                 player: this.option.danmaku.id,
-                author: 'DIYgod',
+                author: 'Pajiji',
                 time: this.video.currentTime,
                 text: commentInput.value,
                 color: this.element.querySelector('.paplayer-comment-setting-color input:checked').value,
-                type: this.element.querySelector('.paplayer-comment-setting-type input:checked').value
+                type: this.element.querySelector('.paplayer-comment-setting-type input:checked').value,
+                size: '25',
             };
             this.option.apiBackend.send(this.option.danmaku.api, danmakuData);
 
@@ -1127,7 +1132,7 @@ class PaPlayer {
             closeComment();
             this.dan.splice(this.danIndex, 0, danmakuData);
             this.danIndex++;
-            const item = danmakuIn(htmlEncode(danmakuData.text), danmakuData.color, danmakuData.type);
+            const item = danmakuIn(htmlEncode(danmakuData.text), danmakuData.color, danmakuData.type, danmakuData.size);
             item.style.border = `2px solid ${this.option.theme}`;
         };
 

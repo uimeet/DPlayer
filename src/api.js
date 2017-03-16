@@ -37,6 +37,7 @@ const LoadXML = function(fromSrc){
     for(let i=0; i<docs.length; i++){
         let p_data = docs[i].getAttribute('p').split(',');
         // 2.669,1,25,16777215,1487388190,54,0,d8a50e2fbfea29c7d530388ec6113ae6
+        // 48.424404,1,37,16711680,1487453308,59849,0,e6f561e8b1920599e1b4ba254b8295e7
         // {"_id":"581ac16d19da4d000ed43dae",
         // "author":"DIYgod",
         // "time":7.729345,
@@ -47,7 +48,7 @@ const LoadXML = function(fromSrc){
         // "player":["9E2E3368B56CDBB42"]}
         danmakuData.danmaku.push({
             _id: p_data[7],
-            author: 'Pajiji',
+            author: p_data[5],
             time: parseFloat(p_data[0]),
             text: docs[i].innerHTML,
             color: '#' + (parseInt(p_data[3], 10)).toString(16),
