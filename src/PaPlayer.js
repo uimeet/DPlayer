@@ -1600,9 +1600,11 @@ class PaPlayer {
 
         this.option.video.url = this.video.src = video.url;
         // this.video.poster = poster;
-        this.video.currentTime = 0;
         if (start_time > 0) {
             this.setStartTime(start_time);
+            this.video.currentTime = start_time;
+        }else{
+            this.video.currentTime = 0;
         }
         this.pause();
         this.TestMediaType();
