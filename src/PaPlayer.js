@@ -406,6 +406,7 @@ class PaPlayer {
             const add0 = (num) => {
                 return num < 10 ? '0' + num : '' + num;
             };
+            if (!isFinite(second)) return '00:00';
             const hr = parseInt(second / 3600);
             const min = parseInt((second - hr*3600) / 60);
             const sec = parseInt(second - hr*3600 - min*60);
@@ -544,6 +545,7 @@ class PaPlayer {
         };
 
         pbar.addEventListener('click', (event) => {
+            if (!isFinite(this.video.duration)) return;
             const e = event || window.event;
             barWidth = pbar.clientWidth;
             let percentage = (e.clientX - getElementViewLeft(pbar)) / barWidth;
@@ -551,9 +553,11 @@ class PaPlayer {
             percentage = percentage < 1 ? percentage : 1;
             this.updateBar('played', percentage, 'width');
             this.video.currentTime = parseFloat(bar.playedBar.style.width) / 100 * this.video.duration;
+            this.resetDanIndex();
         });
 
         const thumbMove = (event) => {
+            if (!isFinite(this.video.duration)) return;
             const e = event || window.event;
             let percentage = (e.clientX - getElementViewLeft(pbar)) / barWidth;
             percentage = percentage > 0 ? percentage : 0;
@@ -563,13 +567,16 @@ class PaPlayer {
         };
 
         const thumbUp = () => {
+            if (!isFinite(this.video.duration)) return;
             document.removeEventListener('mouseup', thumbUp);
             document.removeEventListener('mousemove', thumbMove);
             this.video.currentTime = parseFloat(bar.playedBar.style.width) / 100 * this.video.duration;
+            this.resetDanIndex();
             this.setTime();
         };
 
         pbar.addEventListener('mousedown', () => {
+            if (!isFinite(this.video.duration)) return;
             barWidth = pbar.clientWidth;
             this.clearTime();
             document.addEventListener('mousemove', thumbMove);
@@ -901,14 +908,49 @@ class PaPlayer {
             this.trigger('canplay');
         });
 
+        /**
+         * video play event
+         */
+        this.video.addEventListener('play', () => {
+            this.shouldpause = false;
+            this.bezel.innerHTML = this.getSVG('play');
+            this.bezel.classList.add('paplayer-bezel-transition');
+            this.playButton.classList.add('pause');
+            this.goplayBtn.style.display = 'none';
+            this.element.classList.add('paplayer-playing');
+            this.trigger('play');
+            this.setTime();
+
+            setTimeout(() => {
+                this.element.classList.add('paplayer-hide-controller');
+            }, 2000);
+        });
+
+        /**
+         * video pause event
+         */
+        this.video.addEventListener('pause', () => {
+            this.clearTime();
+            this.ended = false;
+            this.shouldpause = true;
+
+            this.element.classList.remove('paplayer-loading');
+            this.bezel.innerHTML = this.getSVG('pause');
+            this.bezel.classList.add('paplayer-bezel-transition');
+            this.playButton.classList.remove('pause');
+            this.goplayBtn.style.display = 'block';
+            this.element.classList.remove('paplayer-playing');
+            this.trigger('pause');
+        });
+
         // music end
         this.ended = false;
         this.video.addEventListener('ended', () => {
             this.updateBar('played', 1, 'width');
+            this.trigger('ended');
             if (!loop) {
                 this.ended = true;
                 this.pause();
-                this.trigger('ended');
             }
         });
 
@@ -1405,25 +1447,11 @@ class PaPlayer {
             this.video.currentTime = time;
         }
         if (this.video.paused) {
-            this.shouldpause = false;
-
-            this.bezel.innerHTML = this.getSVG('play');
-            this.bezel.classList.add('paplayer-bezel-transition');
-
-            // this.playButton.innerHTML = this.getSVG('pause');
-            this.playButton.classList.add('pause');
-            this.goplayBtn.style.display = 'none';
             if (this.playedTime) {
                 this.clearTime();
             }
-            this.setTime();
-            this.element.classList.add('paplayer-playing');
             this.video.play();
-            this.trigger('play');
 
-            setTimeout(() => {
-                this.element.classList.add('paplayer-hide-controller');
-            }, 2000);
         }
     }
 
@@ -1432,21 +1460,7 @@ class PaPlayer {
      */
     pause() {
         if (!this.shouldpause || this.ended) {
-            this.shouldpause = true;
-            this.element.classList.remove('paplayer-loading');
-
-            this.bezel.innerHTML = this.getSVG('pause');
-            this.bezel.classList.add('paplayer-bezel-transition');
-
-            this.ended = false;
-            // this.playButton.innerHTML = this.getSVG('play');
-            this.playButton.classList.remove('pause');
-            this.goplayBtn.style.display = 'block';
-
             this.video.pause();
-            this.clearTime();
-            this.element.classList.remove('paplayer-playing');
-            this.trigger('pause');
         }
     }
 
