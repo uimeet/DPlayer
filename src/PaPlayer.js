@@ -157,7 +157,7 @@ class PaPlayer {
         };
 
         // define PaPlayer events
-        const eventTypes = ['play', 'pause', 'canplay', 'playing', 'ended', 'error'];
+        const eventTypes = ['play', 'pause', 'canplay', 'danReady', 'playing', 'ended', 'error'];
         this.event = {};
         for (let i = 0; i < eventTypes.length; i++) {
             this.event[eventTypes[i]] = [];
@@ -407,6 +407,7 @@ class PaPlayer {
                 return num < 10 ? '0' + num : '' + num;
             };
             if (!isFinite(second)) return '00:00';
+            second = parseInt(second, 10);
             const hr = parseInt(second / 3600);
             const min = parseInt((second - hr*3600) / 60);
             const sec = parseInt(second - hr*3600 - min*60);
@@ -1546,7 +1547,7 @@ class PaPlayer {
             this.danIndex = 0;
             this.dan = [].concat.apply([], results).sort((a, b) => a.time - b.time);
             this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'none';
-
+            this.trigger('danReady');
             // autoplay
             if (this.option.autoplay && !isMobile) {
                 this.play();
@@ -1564,13 +1565,24 @@ class PaPlayer {
      * @param {Object} danmaku - new danmaku info
      */
     switchVideo(video, danmaku, start_time) {
-        this.option.video.url = this.video.src = video.url;
         this.video.poster = video.pic ? video.pic : '';
-        this.video.currentTime = 0;
+        this.pause();
+        this.option.video.url = this.video.src = video.url;
+        //safari ios 不支持 video.load() 方法 重载视频源地址
+        // const source = this.video.getElementsByTagName('source')[0];
+        // if(source) {
+        //     source.setAttribute('src', video.url);
+        //     console.log("source.getAttribute('src')", source.getAttribute('src'));
+        //     this.video.load();
+        //     console.log("this.video.currentSrc", this.video.currentSrc);
+        // }
         if (start_time) {
             this.setStartTime(start_time);
+            this.video.currentTime = start_time;
+        }else{
+            this.video.currentTime = 0;
         }
-        this.pause();
+
         if (danmaku) {
             this.dan = [];
             this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'block';
