@@ -87,17 +87,20 @@
         },
         clarityCall: function (clarity_tag, el) {
             console.log(clarity_tag);
+            dp1.autoplay = true;
             dp1.switchClarity({
                 url: 'http://devtest.qiniudn.com/若能绽放光芒5.m3u8',
                 pic: 'http://devtest.qiniudn.com/微小微-江南皮革厂倒闭了.jpg',
                 clarity:clarity,
                 current_clarity:clarityMap[clarity_tag]
             });
-            setTimeout(function () {
-                dp1.play();
-            }, 1000)
         }
     });
+    dp1.autoplay = false;
+    dp1.on('playerReady', function () {
+        dp1.autoplay && dp1.play();
+    });
+
     if(true){
         var starttime = 180;
         console.log('time to:'+starttime);

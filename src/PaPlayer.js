@@ -157,7 +157,7 @@ class PaPlayer {
         };
 
         // define PaPlayer events
-        const eventTypes = ['play', 'pause', 'canplay', 'danReady', 'playing', 'ended', 'error'];
+        const eventTypes = ['play', 'pause', 'canplay', 'playerReady', 'playing', 'ended', 'error'];
         this.event = {};
         for (let i = 0; i < eventTypes.length; i++) {
             this.event[eventTypes[i]] = [];
@@ -912,39 +912,12 @@ class PaPlayer {
         });
 
         /**
-         * video play event
-         */
-        this.video.addEventListener('play', () => {
-            this.shouldpause = false;
-            this.bezel.innerHTML = this.getSVG('play');
-            this.bezel.classList.add('paplayer-bezel-transition');
-            this.playButton.classList.add('pause');
-            this.goplayBtn.style.display = 'none';
-            this.element.classList.add('paplayer-playing');
-            this.trigger('play');
-            this.setTime();
-
-            clearTimeout(this.hideTime);
-            this.hideTime = setTimeout(() => {
-                this.element.classList.add('paplayer-hide-controller');
-            }, 2000);
-        });
-
-        /**
          * video pause event
          */
         this.video.addEventListener('pause', () => {
-            this.ended = false;
-            this.shouldpause = true;
-            if (this.element) {
-                //避免已经destory对象后报错
-                this.element.classList.remove('paplayer-loading');
-                this.bezel.innerHTML = this.getSVG('pause');
-                this.bezel.classList.add('paplayer-bezel-transition');
-                this.playButton.classList.remove('pause');
-                this.goplayBtn.style.display = 'block';
-                this.element.classList.remove('paplayer-playing');
-                this.trigger('pause');
+            console.log(this.shouldpause, this.element);
+            if (!this.shouldpause) {
+                this.pause();
             }
         });
 
@@ -1452,8 +1425,25 @@ class PaPlayer {
             this.video.currentTime = time;
         }
         if (this.video.paused) {
+
+            this.shouldpause = false;
             this.clearTime();
+
+            this.bezel.innerHTML = this.getSVG('play');
+            this.bezel.classList.add('paplayer-bezel-transition');
+            this.playButton.classList.add('pause');
+            this.goplayBtn.style.display = 'none';
+            this.element.classList.add('paplayer-playing');
+            this.trigger('play');
+
             this.video.play();
+            this.setTime();
+
+            clearTimeout(this.hideTime);
+            this.hideTime = setTimeout(() => {
+                this.element.classList.add('paplayer-hide-controller');
+            }, 2000);
+
 
         }
     }
@@ -1463,6 +1453,15 @@ class PaPlayer {
      */
     pause() {
         if (!this.shouldpause || this.ended) {
+            this.shouldpause = true;
+            this.element.classList.remove('paplayer-loading');
+            this.bezel.innerHTML = this.getSVG('pause');
+            this.bezel.classList.add('paplayer-bezel-transition');
+            this.playButton.classList.remove('pause');
+            this.goplayBtn.style.display = 'block';
+            this.element.classList.remove('paplayer-playing');
+            this.trigger('pause');
+
             this.clearTime();
             this.video.pause();
         }
@@ -1550,7 +1549,7 @@ class PaPlayer {
             this.danIndex = 0;
             this.dan = [].concat.apply([], results).sort((a, b) => a.time - b.time);
             this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'none';
-            this.trigger('danReady');
+            this.trigger('playerReady');
             // autoplay
             if (this.option.autoplay && !isMobile) {
                 this.play();
@@ -1606,6 +1605,7 @@ class PaPlayer {
         }else {
             this.element.classList.add('paplayer-no-danmaku');
             delete this.option.danmaku;
+            this.trigger('playerReady');
         }
 
         // also need try media type
@@ -1638,6 +1638,7 @@ class PaPlayer {
         this.pause();
         this.TestMediaType();
         this.setClarity(video.clarity, video.current_clarity);
+        this.trigger('playerReady');
     }
 
     destroy(){
