@@ -474,7 +474,7 @@ class PaPlayer {
         let lastPlayPos = 0;
         let currentPlayPos = 0;
         let bufferingDetected = false;
-        let danmakuTime;
+        this.danmakuTime=0;
 
         this.resetDanIndex = ()=>{
             for (let i = 0; i < this.dan.length; i++) {
@@ -525,7 +525,7 @@ class PaPlayer {
                 this.trigger('playing');
             }, 200);
             if (this.option.danmaku && showdan) {
-                danmakuTime = setInterval(() => {
+                this.danmakuTime = setInterval(() => {
                     if (this.video.readyState != 4 || !bufferingDetected) {
                         return;
                     }
@@ -540,9 +540,8 @@ class PaPlayer {
         };
         this.clearTime = () => {
             clearInterval(this.playedTime);
-            if (this.option.danmaku) {
-                clearInterval(danmakuTime);
-            }
+            clearInterval(this.danmakuTime);
+            clearTimeout(this.hideTime);
         };
 
         pbar.addEventListener('click', (event) => {
@@ -785,7 +784,7 @@ class PaPlayer {
                     showdan = true;
                     if (this.option.danmaku) {
                         this.resetDanIndex();
-                        danmakuTime = setInterval(() => {
+                        this.danmakuTime = setInterval(() => {
                             if (this.video.readyState != 4 || !bufferingDetected) {
                                 return;
                             }
@@ -800,7 +799,7 @@ class PaPlayer {
                 else {
                     showdan = false;
                     if (this.option.danmaku) {
-                        clearInterval(danmakuTime);
+                        clearInterval(this.danmakuTime);
                         danContainer.innerHTML = `<div class="paplayer-danmaku-item  paplayer-danmaku-item--demo"></div>`;
                         this.danTunnel = {
                             right: {},
@@ -885,7 +884,7 @@ class PaPlayer {
          */
         // show video time: the metadata has loaded or changed
         this.video.addEventListener('durationchange', () => {
-            if (this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
+            if (this.video && this.video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
                 this.element.getElementsByClassName('paplayer-dtime')[0].innerHTML = secondToTime(this.video.duration);
             }
         });
@@ -906,7 +905,10 @@ class PaPlayer {
 
         // video can play: enough data is available that the media can be played
         this.video.addEventListener('canplay', () => {
-            this.trigger('canplay');
+            if (this.element) {
+                //避免destory之后报错
+                this.trigger('canplay');
+            }
         });
 
         /**
@@ -922,7 +924,8 @@ class PaPlayer {
             this.trigger('play');
             this.setTime();
 
-            setTimeout(() => {
+            clearTimeout(this.hideTime);
+            this.hideTime = setTimeout(() => {
                 this.element.classList.add('paplayer-hide-controller');
             }, 2000);
         });
@@ -931,17 +934,18 @@ class PaPlayer {
          * video pause event
          */
         this.video.addEventListener('pause', () => {
-            this.clearTime();
             this.ended = false;
             this.shouldpause = true;
-
-            this.element.classList.remove('paplayer-loading');
-            this.bezel.innerHTML = this.getSVG('pause');
-            this.bezel.classList.add('paplayer-bezel-transition');
-            this.playButton.classList.remove('pause');
-            this.goplayBtn.style.display = 'block';
-            this.element.classList.remove('paplayer-playing');
-            this.trigger('pause');
+            if (this.element) {
+                //避免已经destory对象后报错
+                this.element.classList.remove('paplayer-loading');
+                this.bezel.innerHTML = this.getSVG('pause');
+                this.bezel.classList.add('paplayer-bezel-transition');
+                this.playButton.classList.remove('pause');
+                this.goplayBtn.style.display = 'block';
+                this.element.classList.remove('paplayer-playing');
+                this.trigger('pause');
+            }
         });
 
         // music end
@@ -1448,9 +1452,7 @@ class PaPlayer {
             this.video.currentTime = time;
         }
         if (this.video.paused) {
-            if (this.playedTime) {
-                this.clearTime();
-            }
+            this.clearTime();
             this.video.play();
 
         }
@@ -1461,6 +1463,7 @@ class PaPlayer {
      */
     pause() {
         if (!this.shouldpause || this.ended) {
+            this.clearTime();
             this.video.pause();
         }
     }
@@ -1643,8 +1646,10 @@ class PaPlayer {
         if (this.option.hotkey) {
             document.removeEventListener('keydown', this.handleKeyDown);
         }
+
         clearTimeout(this.hideTime);
         clearInterval(this.playedTime);
+        clearInterval(this.danmakuTime);
         this.element.innerHTML = '';
         for(let obj in this){
             this[obj] = null;
