@@ -188,7 +188,7 @@ class PaPlayer {
                     x-webkit-airplay="true"
                     ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
                     preload="${this.option.preload}">
-                    <source src="${this.option.video.url}" type="video/mp4">
+                    <source src="${typeof this.option.video.url == 'string'?this.option.video.url:""}" type="video/mp4">
                 </video>
                 <div class="paplayer-danmaku">
                     <div class="paplayer-danmaku-item paplayer-danmaku-item--demo"></div>
@@ -492,7 +492,7 @@ class PaPlayer {
                 // whether the video is buffering
                 if (this.startTime && this.video.readyState >=2) {
                     this.video.currentTime = this.startTime;
-                    this.startTime = null;
+                    delete this.startTime;
                     this.option.danmaku && this.resetDanIndex();
                     this.element.classList.add('paplayer-loading');
                     bufferingDetected = false;
@@ -915,7 +915,6 @@ class PaPlayer {
          * video pause event
          */
         this.video.addEventListener('pause', () => {
-            console.log(this.shouldpause, this.element);
             if (!this.shouldpause) {
                 this.pause();
             }
@@ -1378,6 +1377,7 @@ class PaPlayer {
         this.setClarity(this.option.video.clarity, this.option.video.current_clarity);
 
         index++;
+
     }
 
     setClarity(clarity, current_clarity) {
@@ -1454,16 +1454,17 @@ class PaPlayer {
     pause() {
         if (!this.shouldpause || this.ended) {
             this.shouldpause = true;
-            this.element.classList.remove('paplayer-loading');
-            this.bezel.innerHTML = this.getSVG('pause');
-            this.bezel.classList.add('paplayer-bezel-transition');
-            this.playButton.classList.remove('pause');
-            this.goplayBtn.style.display = 'block';
-            this.element.classList.remove('paplayer-playing');
             this.trigger('pause');
 
             this.clearTime();
             this.video.pause();
+
+            this.element.classList.remove('paplayer-loading');
+            this.element.classList.remove('paplayer-playing');
+            this.playButton.classList.remove('pause');
+            this.bezel.innerHTML = this.getSVG('pause');
+            this.bezel.classList.add('paplayer-bezel-transition');
+            this.goplayBtn.style.display = 'block';
         }
     }
 
@@ -1569,7 +1570,10 @@ class PaPlayer {
     switchVideo(video, danmaku, start_time) {
         this.video.poster = video.pic ? video.pic : '';
         this.pause();
-        this.option.video.url = this.video.src = video.url;
+        this.option.video.url = video.url;
+        if(typeof this.option.video.url == 'string') {
+            this.video.src = this.option.video.url;
+        }
         //safari ios 不支持 video.load() 方法 重载视频源地址
         // const source = this.video.getElementsByTagName('source')[0];
         // if(source) {
@@ -1621,13 +1625,10 @@ class PaPlayer {
     switchClarity(video) {
         let start_time = this.video.currentTime, poster="";
 
-        // const canvas = document.createElement("canvas");
-        // canvas.width = this.video.videoWidth;
-        // canvas.height = this.video.videoHeight;
-        // canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
-        // poster = canvas.toDataURL("image/png");
-
-        this.option.video.url = this.video.src = video.url;
+        this.option.video.url = video.url;
+        if(typeof this.option.video.url == 'string') {
+            this.video.src = this.option.video.url;
+        }
         // this.video.poster = poster;
         if (start_time > 0) {
             this.setStartTime(start_time);
@@ -1653,8 +1654,15 @@ class PaPlayer {
         clearInterval(this.danmakuTime);
         this.element.innerHTML = '';
         for(let obj in this){
-            this[obj] = null;
+            // console.log(obj, !defaultApiBackend.isDOM(this[obj]));
+            //not dom element and set to : null
+            if (!defaultApiBackend.isDOM(this[obj])){
+                if (typeof this[obj] == 'object' && typeof this[obj]['destroy'] == 'function') this[obj].destroy();
+                this[obj] = null;
+            }
+            // console.log('ok')
         }
+
     }
 
     /**
@@ -1662,14 +1670,38 @@ class PaPlayer {
      * @constructor
      */
     TestMediaType(){
+        let flvconf = {
+            enableWorker: false,
+            lazyLoadMaxDuration: 3 * 60,
+            seekType: 'range',
+            seekParamStart: 'start',
+            seekParamEnd: 'end',
+            reuseRedirectedURL: true
+        };
+        if (this.hls) {
+            this.hls.destroy();
+            delete this.hls;
+        }
+        if (this.flvPlayer) {
+            this.flvPlayer.destroy();
+            delete this.flvPlayer;
+        }
+        // url is json object for FLV
+        if (typeof this.option.video.url == 'object' && flvjs.isSupported()) {
+            // console.log('url is object, use flv.js');
+            this.flvPlayer = flvjs.createPlayer(this.option.video.url, flvconf);
+            this.flvPlayer.attachMediaElement(this.video);
+            this.flvPlayer.load();
+        }
+
         // Support HTTP Live Streaming
-        if (/(m3u8\?|m3u8$)/i.exec(this.option.video.url) && Hls.isSupported()) {
+        if (/(\.m3u8\?|\.m3u8$)/i.exec(this.option.video.url) && Hls.isSupported()) {
             // this.element.getElementsByClassName('paplayer-time')[0].style.display = 'none';
-            const hls = new Hls();
-            hls.attachMedia(this.video);
-            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                hls.loadSource(this.option.video.url);
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+            this.hls = new Hls();
+            this.hls.attachMedia(this.video);
+            this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                this.hls.loadSource(this.option.video.url);
+                this.hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
                     console.log("manifest loaded, found " + data.levels.length + " quality level");
                 });
             });
@@ -1677,12 +1709,12 @@ class PaPlayer {
 
         // Support FLV
         if (/(flv\?|flv$)/i.exec(this.option.video.url) && flvjs.isSupported()) {
-            const flvPlayer = flvjs.createPlayer({
+            this.flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: this.option.video.url
-            });
-            flvPlayer.attachMediaElement(this.video);
-            flvPlayer.load();
+            }, flvconf);
+            this.flvPlayer.attachMediaElement(this.video);
+            this.flvPlayer.load();
         }
     }
 }
