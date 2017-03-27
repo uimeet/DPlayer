@@ -385,6 +385,7 @@ class PaPlayer {
             const toggleController = () => {
                 if (this.element.classList.contains('paplayer-hide-controller')) {
                     this.element.classList.remove('paplayer-hide-controller');
+                    closeClaritySet();
                 }
                 else {
                     this.element.classList.add('paplayer-hide-controller');
@@ -654,6 +655,7 @@ class PaPlayer {
                         this.element.classList.add('paplayer-hide-controller');
                         closeSetting();
                         closeComment();
+                        closeClaritySet();
                     }
                 }, 2000);
             };
@@ -1132,6 +1134,7 @@ class PaPlayer {
                 if (el.classList.contains('active')) {
                     return;
                 }
+                clarity_list.style.display = "none";
                 clarityCall.call(this, clarity, el);
                 // if (clarityCall.call(this, clarity, el)) {
                 //     //回调切换清晰度方法，返回结果为true，则更新视图
@@ -1219,6 +1222,10 @@ class PaPlayer {
             }, 1000);
             this.element.classList.add('paplayer-show-controller');
         };
+        const closeClaritySet = () => {
+            clarity_list.style.display = "none";
+        };
+        this.closeClaritySet = closeClaritySet;
 
         mask.addEventListener('click', () => {
             closeComment();
@@ -1446,6 +1453,7 @@ class PaPlayer {
             clearTimeout(this.hideTime);
             this.hideTime = setTimeout(() => {
                 this.element.classList.add('paplayer-hide-controller');
+                this.closeClaritySet();
             }, 2000);
 
 
