@@ -931,6 +931,10 @@ class PaPlayer {
             }
         });
 
+        this.video.addEventListener('play', () => {
+            this.ended = false;
+        });
+
         // control volume
         this.video.volume = parseInt(this.element.getElementsByClassName('paplayer-volume-bar-inner')[0].style.width) / 100;
 
@@ -1630,7 +1634,7 @@ class PaPlayer {
             this.video.src = this.option.video.url;
         }
         // this.video.poster = poster;
-        if (start_time > 0) {
+        if (start_time > 0 && !this.ended) {
             this.setStartTime(start_time);
             this.video.currentTime = start_time;
         }else{
