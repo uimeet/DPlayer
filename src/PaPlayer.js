@@ -935,6 +935,28 @@ class PaPlayer {
 
         this.video.addEventListener('play', () => {
             this.ended = false;
+
+            if (this.shouldpause) {
+
+                this.shouldpause = false;
+                this.clearTime();
+
+                this.bezel.innerHTML = this.getSVG('play');
+                this.bezel.classList.add('paplayer-bezel-transition');
+                this.playButton.classList.add('pause');
+                this.goplayBtn.style.display = 'none';
+                this.element.classList.add('paplayer-playing');
+                this.trigger('play');
+
+                this.setTime();
+
+                clearTimeout(this.hideTime);
+                this.hideTime = setTimeout(() => {
+                    this.element.classList.add('paplayer-hide-controller');
+                    this.closeClaritySet();
+                }, 2000);
+
+            }
         });
 
         // control volume
