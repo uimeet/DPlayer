@@ -1299,10 +1299,12 @@ class PaPlayer {
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
             if (isFull) {
                 document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
+                document.getElementsByTagName('body')[0].classList.remove('full');
                 this.element.classList.remove('full');
             }else{
                 document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
                 document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
+                document.getElementsByTagName('body')[0].classList.add('full');
                 this.element.classList.add('full');
             }
             isFull = !isFull;
