@@ -1081,6 +1081,7 @@ class PaPlayer {
             });
 
             // measure
+            this.itemDemo.style.fontSize = item.style.fontSize;
             this.itemDemo.innerHTML = text;
             let itemWidth = this.itemDemo.offsetWidth;
 
