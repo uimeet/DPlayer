@@ -489,6 +489,7 @@ class PaPlayer {
         this.danmakuTime=0;
 
         this.resetDanIndex = ()=>{
+            if (!this.dan) return;
             for (let i = 0; i < this.dan.length; i++) {
                 if (this.dan[i].time >= this.video.currentTime) {
                     this.danIndex = i;
