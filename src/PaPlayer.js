@@ -81,11 +81,13 @@ class PaPlayer {
             }
         }
 
+        const baseUrl=window.location.href.split('#')[0];
+
         const clarityArr = {
-            HD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibochaoqingkuang"></use></svg>`,
-            SD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibogaoqingkuang"></use></svg>`,
-            LD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhibobiaoqingkuang"></use></svg>`,
-            //FD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="#icon-zhiboliuchangkuang"></use></svg>`,
+            HD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibochaoqingkuang"></use></svg>`,
+            SD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibogaoqingkuang"></use></svg>`,
+            LD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibobiaoqingkuang"></use></svg>`,
+            //FD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhiboliuchangkuang"></use></svg>`,
         };
 
         //清晰度html
@@ -420,23 +422,32 @@ class PaPlayer {
          */
             // get element's view position
         const getElementViewLeft = (element) => {
-                let actualLeft = element.offsetLeft;
-                let current = element.offsetParent;
-                let elementScrollLeft;
-                if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
-                    while (current !== null) {
-                        actualLeft += current.offsetLeft;
-                        current = current.offsetParent;
-                    }
-                }
-                else {
-                    while (current !== null && current !== this.element) {
-                        actualLeft += current.offsetLeft;
-                        current = current.offsetParent;
-                    }
-                }
-                elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
+                let box = element.getBoundingClientRect();
+                let actualLeft = box.left + window.pageXOffset - document.documentElement.clientLeft;
+                let elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
                 return actualLeft - elementScrollLeft;
+
+                // let actualLeft = element.offsetLeft;
+                // let current = element.offsetParent;
+                // let elementScrollLeft;
+                // console.log(element, 'actualLeft',actualLeft);
+                // if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
+                //     while (current !== null) {
+                //         console.log(current, current.offsetLeft);
+                //         actualLeft += current.offsetLeft;
+                //         current = current.offsetParent;
+                //     }
+                // }
+                // else {
+                //     while (current !== null && current !== this.element) {
+                //         console.log(current, current.offsetLeft);
+                //         actualLeft += current.offsetLeft;
+                //         current = current.offsetParent;
+                //     }
+                // }
+                // elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
+                // console.log('elementScrollLeft',elementScrollLeft);
+                // return actualLeft - elementScrollLeft;
             };
 
         const getElementViewTop = (element) => {
@@ -584,6 +595,7 @@ class PaPlayer {
             document.addEventListener('mouseup', thumbUp);
         });
 
+        const getWidth = (e) => {return e.clientWidth};
 
         /**
          * control volume
@@ -593,7 +605,6 @@ class PaPlayer {
         const volumeBarWrapWrap = this.element.getElementsByClassName('paplayer-volume-bar-wrap')[0];
         const volumeBarWrap = this.element.getElementsByClassName('paplayer-volume-bar')[0];
         const volumeicon = this.element.getElementsByClassName('paplayer-volume-icon')[0];
-        const vWidth = 35;
 
         this.switchVolumeIcon = () => {
             const volumeicon = this.element.getElementsByClassName('paplayer-volume-icon')[0];
@@ -609,7 +620,7 @@ class PaPlayer {
         };
         const volumeMove = (event) => {
             const e = event || window.event;
-            let percentage = (e.clientX - getElementViewLeft(volumeBarWrap) - 5.5) / vWidth;
+            let percentage = (e.clientX - getElementViewLeft(volumeBarWrap) - 5.5) / getWidth(volumeBarWrap);
             this.volume(percentage);
         };
         const volumeUp = () => {
@@ -620,7 +631,7 @@ class PaPlayer {
 
         volumeBarWrapWrap.addEventListener('click', (event) => {
             const e = event || window.event;
-            let percentage = (e.clientX - getElementViewLeft(volumeBarWrap) - 5.5) / vWidth;
+            let percentage = (e.clientX - getElementViewLeft(volumeBarWrap) - 5.5) / getWidth(volumeBarWrap);
             this.volume(percentage);
         });
         volumeBarWrapWrap.addEventListener('mousedown', () => {
@@ -836,12 +847,11 @@ class PaPlayer {
                 const danmakuBarWrapWrap = this.element.getElementsByClassName('paplayer-danmaku-bar-wrap')[0];
                 const danmakuBarWrap = this.element.getElementsByClassName('paplayer-danmaku-bar')[0];
                 const danmakuSettingBox = this.element.getElementsByClassName('paplayer-setting-danmaku')[0];
-                const dWidth = 130;
                 this.updateBar('danmaku', danOpacity, 'width');
 
                 const danmakuMove = (event) => {
                     const e = event || window.event;
-                    let percentage = (e.clientX - getElementViewLeft(danmakuBarWrap)) / dWidth;
+                    let percentage = (e.clientX - getElementViewLeft(danmakuBarWrap)) / getWidth(danmakuBarWrap);
                     percentage = percentage > 0 ? percentage : 0;
                     percentage = percentage < 1 ? percentage : 1;
                     this.updateBar('danmaku', percentage, 'width');
@@ -860,7 +870,7 @@ class PaPlayer {
 
                 danmakuBarWrapWrap.addEventListener('click', (event) => {
                     const e = event || window.event;
-                    let percentage = (e.clientX - getElementViewLeft(danmakuBarWrap)) / dWidth;
+                    let percentage = (e.clientX - getElementViewLeft(danmakuBarWrap)) / getWidth(danmakuBarWrap);
                     percentage = percentage > 0 ? percentage : 0;
                     percentage = percentage < 1 ? percentage : 1;
                     this.updateBar('danmaku', percentage, 'width');
