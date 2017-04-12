@@ -1691,26 +1691,28 @@ class PaPlayer {
     }
 
     destroy(){
-        console.log('player_destroy');
-        this.pause();
-        if (this.option.hotkey) {
-            document.removeEventListener('keydown', this.handleKeyDown);
-        }
-
-        clearTimeout(this.hideTime);
-        clearInterval(this.playedTime);
-        clearInterval(this.danmakuTime);
-        this.element.innerHTML = '';
-        for(let obj in this){
-            // console.log(obj, !defaultApiBackend.isDOM(this[obj]));
-            //not dom element and set to : null
-            if (!defaultApiBackend.isDOM(this[obj])){
-                if (typeof this[obj] == 'object' && typeof this[obj]['destroy'] == 'function') this[obj].destroy();
-                this[obj] = null;
+        if(this.destoryed !== true){
+            console.log('player_destroy');
+            this.pause();
+            if (this.option.hotkey) {
+                document.removeEventListener('keydown', this.handleKeyDown);
             }
-            // console.log('ok')
-        }
 
+            clearTimeout(this.hideTime);
+            clearInterval(this.playedTime);
+            clearInterval(this.danmakuTime);
+            this.element.innerHTML = '';
+            for(let obj in this){
+                // console.log(obj, !defaultApiBackend.isDOM(this[obj]));
+                //not dom element and set to : null
+                if (!defaultApiBackend.isDOM(this[obj])){
+                    if (typeof this[obj] == 'object' && typeof this[obj]['destroy'] == 'function') this[obj].destroy();
+                    this[obj] = null;
+                }
+                // console.log('ok')
+            }
+            this.destoryed = true;
+        }
     }
 
     /**
