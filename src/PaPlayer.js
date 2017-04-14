@@ -71,8 +71,12 @@ class PaPlayer {
             clarity: null,
             area: false,
             clarityCall: function (clarity_tag, el) {
-                console.log('未设置clarityCall回调：option.apiBackend(clarity_tag, el)', clarity_tag);
+                console.log('clarityCall：(clarity_tag, el)', clarity_tag);
                 return true;
+            },
+            danSendCall: function (data, callback) {
+                console.log('danSendCall:(data, callback)', data);
+                callback();
             }
         };
         for (let defaultKey in defaultOption) {
@@ -1214,14 +1218,17 @@ class PaPlayer {
                 type: this.element.querySelector('.paplayer-comment-setting-type input:checked').value,
                 size: '25',
             };
-            this.option.apiBackend.send(this.option.danmaku.api, danmakuData);
 
             commentInput.value = '';
             closeComment();
-            this.dan.splice(this.danIndex, 0, danmakuData);
-            this.danIndex++;
-            const item = danmakuIn(htmlEncode(danmakuData.text), danmakuData.color, danmakuData.type, danmakuData.size);
-            item.style.border = `2px solid ${this.option.theme}`;
+
+            this.option.danSendCall(danmakuData, () => {
+                this.dan.splice(this.danIndex, 0, danmakuData);
+                this.danIndex++;
+                const item = danmakuIn(htmlEncode(danmakuData.text), danmakuData.color, danmakuData.type, danmakuData.size);
+                item.style.border = `2px solid ${this.option.theme}`;
+            });
+
         };
 
         const closeCommentSetting = () => {
