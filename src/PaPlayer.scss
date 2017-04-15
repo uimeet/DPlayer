@@ -459,7 +459,7 @@
       }
 
       #paplayer-menu {
-        stroke:#ddd;
+        stroke:#aaa;
         stroke-width:.01rem;
       }
 
@@ -844,7 +844,7 @@
               }
 
               input:checked+span {
-                border:none !important;
+                //border:none !important;
                 animation:my-face 5s infinite ease-in-out;
                 //box-shadow:0 .02rem .02rem 0 rgba(0,0,0,.14),0 .03rem .01rem -.02rem rgba(0,0,0,.2),0 .01rem .05rem 0 rgba(0,0,0,.12);
               }
