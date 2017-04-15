@@ -359,7 +359,7 @@
       height: 0;
     }
   }
- 
+
   .paplayer-controller {
     position:absolute;
     bottom:0;
@@ -374,7 +374,7 @@
       padding:.05rem 0;
       cursor:pointer;
       position:absolute;
-	  left:.1rem; 
+	  left:.1rem;
       bottom:.33rem;
       width:calc(100% - .2rem);
       height:.13rem;
@@ -629,7 +629,7 @@
         .paplayer-setting-speed-item {
           height:.3rem;
 		  overflow:hidden;
-		  line-height:.3rem; 
+		  line-height:.3rem;
           padding:0 .1rem;
           cursor:pointer;
 
@@ -788,7 +788,7 @@
 
             .paplayer-comment-setting-type {
               font-size:0;
-			  margin-top:.07rem; 
+			  margin-top:.07rem;
 
               label {
                 &:nth-child(2) {
@@ -838,19 +838,15 @@
                 display:inline-block;
                 border-radius:50%;
                 cursor:pointer;
-				margin-top:.02rem; 
-				margin-left:.06rem; 
+				margin-top:.02rem;
+				margin-left:.06rem;
 				margin-right:.02rem;
-
-                &:hover {
-                  animation:my-face 5s infinite ease-in-out;
-                  box-shadow:0 .02rem .02rem 0 rgba(0,0,0,.14),0 .03rem .01rem -.02rem rgba(0,0,0,.2),0 .01rem .05rem 0 rgba(0,0,0,.12);
-                }
               }
 
               input:checked+span {
-                box-shadow:0 .02rem .02rem 0 rgba(0,0,0,.14),0 .03rem .01rem -.02rem rgba(0,0,0,.2),0 .01rem .05rem 0 rgba(0,0,0,.12);
                 border:none !important;
+                animation:my-face 5s infinite ease-in-out;
+                //box-shadow:0 .02rem .02rem 0 rgba(0,0,0,.14),0 .03rem .01rem -.02rem rgba(0,0,0,.2),0 .01rem .05rem 0 rgba(0,0,0,.12);
               }
             }
           }
@@ -902,7 +898,7 @@
       .paplayer-toggle {
         width:.32rem;
         height:.2rem;
-		margin-top:.05rem; 
+		margin-top:.05rem;
         text-align:center;
         font-size:0;
         vertical-align:middle;
@@ -915,7 +911,7 @@
         }
         input + label {
           display:block;
-          position:relative; 
+          position:relative;
           border:1px solid rgb(223,223,223);
           height:100%;
           border-radius:.16rem;
@@ -960,7 +956,7 @@
 
         input:checked + label:after {
           left:auto;
-		  right:0; 
+		  right:0;
         }
       }
     }

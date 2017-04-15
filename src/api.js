@@ -13,7 +13,6 @@ const typeArr = {
     '1':'right', '6':'left', '5': 'top', '4': 'bottom'
 };
 
-
 export const color2int = function (color) {
     var color = color.substr(1).split('');
     color.length == 3 && (color = [color[0], color[0], color[1], color[1], color[2], color[2]]);
@@ -26,6 +25,21 @@ export const int2color = function (int) {
         color.unshift('0');
     }
     return '#' + color.join('');
+};
+
+
+export const getLocal = function (key) {
+    var value = window.localStorage.getItem(key);
+    if (value) {
+        try {
+            return JSON.parse(value);
+        } catch (err) {
+        }
+    }
+    return null;
+};
+export const setLocal = function (key, value) {
+    return window.localStorage.setItem(key, JSON.stringify(value));
 };
 
 /**

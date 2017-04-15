@@ -50,9 +50,9 @@ class PaPlayer {
         /*
          default options
          @clarity //当前播放的视频清晰度,HD|SD|LD
-                    在option.video中可设置clarity属性：{"HD":"SHD","LD":"SLD"}，（HD,LD是固定的见clarityArr，SHD,SLD是自定义的）
-                    在option.video中可设置current_clarity属性：当前的清晰度，否则为option.video.clarity第1个, HD|LD|SD
-                    然后再添加一个option.clarityCall回调来完成视频源的切换
+         在option.video中可设置clarity属性：{"HD":"SHD","LD":"SLD"}，（HD,LD是固定的见clarityArr，SHD,SLD是自定义的）
+         在option.video中可设置current_clarity属性：当前的清晰度，否则为option.video.clarity第1个, HD|LD|SD
+         然后再添加一个option.clarityCall回调来完成视频源的切换
          @preload  //auto|meta|none
          @area  //播放器宽高，有效格式 '300px'(高)；['300px'](高);['100%', '300px'](宽，高); false 不设置
          */
@@ -85,12 +85,12 @@ class PaPlayer {
             }
         }
 
-        const baseUrl=window.location.href.split('#')[0];
+        const baseUrl = window.location.href.split('#')[0];
 
         const clarityArr = {
-            HD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibochaoqingkuang"></use></svg>`,
-            SD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibogaoqingkuang"></use></svg>`,
-            LD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibobiaoqingkuang"></use></svg>`,
+            HD: `<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibochaoqingkuang"></use></svg>`,
+            SD: `<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibogaoqingkuang"></use></svg>`,
+            LD: `<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhibobiaoqingkuang"></use></svg>`,
             //FD:`<svg class="ali_icon" aria-hidden="true"><use xlink:href="${baseUrl}#icon-zhiboliuchangkuang"></use></svg>`,
         };
 
@@ -194,14 +194,14 @@ class PaPlayer {
                     x-webkit-airplay="true"
                     ${this.option.screenshot ? `crossorigin="anonymous"` : ``}
                     preload="${this.option.preload}">
-                    <source src="${typeof this.option.video.url == 'string'?this.option.video.url:""}" type="video/mp4">
+                    <source src="${typeof this.option.video.url == 'string' ? this.option.video.url : ""}" type="video/mp4">
                 </video>
                 <div class="paplayer-danmaku">
                     <div class="paplayer-danmaku-item paplayer-danmaku-item--demo"></div>
                 </div>
                 <div class="paplayer-bezel">
                     <span class="paplayer-bezel-icon"></span>
-                    <span class="paplayer-danloading" ${this.option.danmaku ? `` :  `style="display:none"`}>${getTran('Danmaku is loading')}</span>
+                    <span class="paplayer-danloading" ${this.option.danmaku ? `` : `style="display:none"`}>${getTran('Danmaku is loading')}</span>
                     <span class="diplayer-loading-icon">
                         <svg height="100%" version="1.1" viewBox="0 0 22 22" width="100%">
                             <svg x="7" y="1">
@@ -237,12 +237,12 @@ class PaPlayer {
             <div class="paplayer-controller">
                 <div class="paplayer-icons paplayer-icons-left">
                     <button class="paplayer-icon paplayer-play-icon">`
-            // +           this.getSVG('play')
-            + `     </button>
+                                 // +           this.getSVG('play')
+                                 + `     </button>
                     <div class="paplayer-volume" ${isMobile ? 'style="display: none;"' : ''}>
                         <button class="paplayer-icon paplayer-volume-icon">`
-            +               this.getSVG('volume-down')
-            + `         </button>
+                                 + this.getSVG('volume-down')
+                                 + `         </button>
                         <div class="paplayer-volume-bar-wrap">
                             <div class="paplayer-volume-bar">
                                 <div class="paplayer-volume-bar-inner" style="width: 70%; background: ${this.option.theme};">
@@ -256,17 +256,17 @@ class PaPlayer {
                 <div class="paplayer-icons paplayer-icons-right">
                     ${this.option.screenshot ? `
                     <a href="#" class="paplayer-icon paplayer-camera-icon" ${isMobile ? 'style="display: none;"' : ''}paplayer-volume>`
-                +           this.getSVG('camera')
-                + `     </a>
+                                 + this.getSVG('camera')
+                                 + `     </a>
                     ` : ``}
                     <div class="paplayer-comment">
                         <button class="paplayer-icon paplayer-comment-icon">`
-            +               this.getSVG('comment')
-            + `         </button>
+                                 + this.getSVG('comment')
+                                 + `         </button>
                         <div class="paplayer-comment-box">
                             <button class="paplayer-icon paplayer-comment-setting-icon">`
-            +                   this.getSVG('menu')
-            + `             </button>
+                                 + this.getSVG('menu')
+                                 + `             </button>
                             <div class="paplayer-comment-setting-box">
                                 <div class="paplayer-comment-setting-color">
                                    <div class="paplayer-comment-setting-title">${getTran('Set danmaku color')}</div>
@@ -313,21 +313,21 @@ class PaPlayer {
                             </div>
                             <input class="paplayer-comment-input" type="text" placeholder="${getTran('Input danmaku, hit Enter')}" maxlength="30">
                             <button class="paplayer-icon paplayer-send-icon">`
-            +                   this.getSVG('send')
-            + `             </button>
+                                 + this.getSVG('send')
+                                 + `             </button>
                         </div>
                     </div>
                     <div class="paplayer-setting">
                         <button class="paplayer-icon paplayer-setting-icon">`
-            +               this.getSVG('setting')
-            + `         </button>
+                                 + this.getSVG('setting')
+                                 + `         </button>
                         <div class="paplayer-setting-box"></div>
                     </div>
                     ${this.getClarity()}`
-            + `     
+                                 + `     
                     <button class="paplayer-icon paplayer-full-icon">`
-            +           this.getSVG('full')
-            + `     </button>
+                                 + this.getSVG('full')
+                                 + `     </button>
                 </div>
                 <div class="paplayer-bar-wrap">
                     <div class="paplayer-bar">
@@ -344,6 +344,9 @@ class PaPlayer {
                 <div class="paplayer-menu-item close_menu"><span class="paplayer-menu-label"><a href="javascript:;">${getTran('Close Menu')}</a></span></div>
             </div>
         `;
+
+        let plset_name = 'paplayer_set';
+        let plset = defaultApiBackend.getLocal(plset_name) || {};
 
         // arrow style
         var arrow = this.element.offsetWidth <= 500;
@@ -416,9 +419,9 @@ class PaPlayer {
             if (!isFinite(second)) return '00:00';
             second = parseInt(second, 10);
             const hr = parseInt(second / 3600);
-            const min = parseInt((second - hr*3600) / 60);
-            const sec = parseInt(second - hr*3600 - min*60);
-            return hr>0 ? add0(hr) + ':' + add0(min) + ':' + add0(sec): add0(min) + ':' + add0(sec);
+            const min = parseInt((second - hr * 3600) / 60);
+            const sec = parseInt(second - hr * 3600 - min * 60);
+            return hr > 0 ? add0(hr) + ':' + add0(min) + ':' + add0(sec) : add0(min) + ':' + add0(sec);
         };
 
         /**
@@ -490,9 +493,9 @@ class PaPlayer {
         let lastPlayPos = 0;
         let currentPlayPos = 0;
         let bufferingDetected = false;
-        this.danmakuTime=0;
+        this.danmakuTime = 0;
 
-        this.resetDanIndex = ()=>{
+        this.resetDanIndex = () => {
             if (!this.dan) return;
             for (let i = 0; i < this.dan.length; i++) {
                 if (this.dan[i].time >= this.video.currentTime) {
@@ -507,7 +510,7 @@ class PaPlayer {
         this.setTime = () => {
             this.playedTime = setInterval(() => {
                 // whether the video is buffering
-                if (this.startTime && this.video.readyState >=2) {
+                if (this.startTime && this.video.readyState >= 2) {
                     this.video.currentTime = this.startTime;
                     delete this.startTime;
                     this.option.danmaku && this.resetDanIndex();
@@ -600,7 +603,9 @@ class PaPlayer {
             document.addEventListener('mouseup', thumbUp);
         });
 
-        const getWidth = (e) => {return e.clientWidth};
+        const getWidth = (e) => {
+            return e.clientWidth
+        };
 
         /**
          * control volume
@@ -689,8 +694,8 @@ class PaPlayer {
                     <div class="paplayer-setting-item paplayer-setting-speed" style="display: none;">
                         <span class="paplayer-label">${getTran('Speed')}</span>
                         <div class="paplayer-toggle">`
-            +           this.getSVG('right')
-            + `     </div>
+                        + this.getSVG('right')
+                        + `     </div>
                     </div>
                     <div class="paplayer-setting-item paplayer-setting-loop">
                         <span class="paplayer-label">${getTran('Loop')}</span>
@@ -908,7 +913,7 @@ class PaPlayer {
 
         // show video loaded bar: to inform interested parties of progress downloading the media
         this.video.addEventListener('progress', () => {
-            if(this.video){
+            if (this.video) {
                 const percentage = this.video.buffered.length ? this.video.buffered.end(this.video.buffered.length - 1) / this.video.duration : 0;
                 this.updateBar('loaded', percentage, 'width');
             }
@@ -988,7 +993,7 @@ class PaPlayer {
         /**
          * danmaku display
          */
-        const itemHeight = arrow ? 24: 30;
+        const itemHeight = arrow ? 24 : 30;
         let danWidth;
         let danHeight;
         let itemY;
@@ -1046,7 +1051,7 @@ class PaPlayer {
         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
 
         this.textScale = 1;
-        if(typeof window.devicePixelRatio != 'undefined'){
+        if (typeof window.devicePixelRatio != 'undefined') {
             this.textScale = .618 + .382 / (2 * window.devicePixelRatio);
         }
         /***
@@ -1058,13 +1063,13 @@ class PaPlayer {
          * @returns {Element}
          */
         const danmakuIn = (text, color, type, size) => {
-            if(color == ''){
+            if (color == '') {
                 color = '#fff'
             }
-            if(type == ''){
+            if (type == '') {
                 type = 'right'
             }
-            if(typeof size == 'undefined' || size == ''){
+            if (typeof size == 'undefined' || size == '') {
                 size = '25'
             }
             danWidth = danContainer.offsetWidth;
@@ -1077,7 +1082,7 @@ class PaPlayer {
             item.style.opacity = danOpacity;
             item.style.color = color;
             item.style.fontSize = size + 'px';
-            if(isMobile){
+            if (isMobile) {
                 item.style.fontSize = this.textScale * parseInt(size, 10) + 'px';
             }
             item.addEventListener('animationend', () => {
@@ -1103,7 +1108,7 @@ class PaPlayer {
                     item.style.bottom = itemHeight * getTunnel(item, type) + 'px';
                     break;
                 default:
-                    console.error(`Can't handled danmaku:`,text, color, type, size);
+                    console.error(`Can't handled danmaku:`, text, color, type, size);
             }
 
             // insert
@@ -1138,6 +1143,7 @@ class PaPlayer {
         const commentIcon = this.element.getElementsByClassName('paplayer-comment-icon')[0];
         const commentBox = this.element.getElementsByClassName('paplayer-comment-box')[0];
         const commentSettingIcon = this.element.getElementsByClassName('paplayer-comment-setting-icon')[0];
+        const commentTextIcon = commentSettingIcon.getElementsByClassName('paplayer-fill')[0];
         const commentSettingBox = this.element.getElementsByClassName('paplayer-comment-setting-box')[0];
         const commentSendIcon = this.element.getElementsByClassName('paplayer-send-icon')[0];
 
@@ -1152,7 +1158,7 @@ class PaPlayer {
                 clarityTimer = setTimeout(function () {
                     clarity_list.style.display = "none";
                 }, 5000);
-            }else{
+            } else {
                 clarity_list.style.display = "none";
             }
         });
@@ -1165,8 +1171,8 @@ class PaPlayer {
             }, 5000);
         });
 
-        for (let i=0, l=clarity_list.childNodes.length; i < l ; i++) {
-            clarity_list.childNodes[i].addEventListener('click', function(){
+        for (let i = 0, l = clarity_list.childNodes.length; i < l; i++) {
+            clarity_list.childNodes[i].addEventListener('click', function () {
                 let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
 
                 if (el.classList.contains('active')) {
@@ -1174,19 +1180,6 @@ class PaPlayer {
                 }
                 clarity_list.style.display = "none";
                 clarityCall.call(this, clarity, el);
-                // if (clarityCall.call(this, clarity, el)) {
-                //     //回调切换清晰度方法，返回结果为true，则更新视图
-                //     for (let i=0, l=s.length; i<l; i++){
-                //         if (s[i].dataset.clarity == clarity) {
-                //             s[i].classList.add('active');
-                //             continue;
-                //         }
-                //         s[i].classList.remove('active');
-                //     }
-                //     current_clarity.dataset.clarity = clarity;
-                //     current_clarity.innerHTML = el.innerHTML;
-                //     clarity_list.style.display = "none";
-                // }
             });
         }
 
@@ -1286,12 +1279,41 @@ class PaPlayer {
         });
 
         // comment setting box
-        this.element.getElementsByClassName('paplayer-comment-setting-color')[0].addEventListener('click', () => {
-            const sele = this.element.querySelector('input[name="paplayer-danmaku-color-${index}"]:checked+span');
+        const comSet = this.element.getElementsByClassName('paplayer-comment-setting-color')[0];
+        const comType = this.element.getElementsByClassName('paplayer-comment-setting-type')[0];
+        comSet.addEventListener('click', () => {
+            const sele = comSet.querySelector('input[type="radio"]:checked');
             if (sele) {
-                commentSettingIcon.getElementsByClassName('paplayer-fill')[0].style.fill = this.element.querySelector('input[name="paplayer-danmaku-color-${index}"]:checked').value;
+                let val = sele.value;
+                plset['danColor'] = val;
+                defaultApiBackend.setLocal(plset_name, plset);
+                commentTextIcon.style.fill = val;
             }
         });
+        if (plset['danColor']) {
+            let s = comSet.querySelector(`input[value="${plset['danColor']}"]`);
+            if (s) {
+                comSet.querySelector('input[type="radio"]:checked').removeAttribute('checked');
+                s.setAttribute('checked', 'checked');
+                commentTextIcon.style.fill = s.value;
+            }
+        }
+
+        comType.addEventListener('click', () => {
+            const sele = comType.querySelector('input[type="radio"]:checked');
+            if (sele) {
+                let val = sele.value;
+                plset['danType'] = val;
+                defaultApiBackend.setLocal(plset_name, plset);
+            }
+        });
+        if (plset['danType']) {
+            let s = comType.querySelector(`input[value="${plset['danType']}"]`);
+            if (s) {
+                comType.querySelector('input[type="radio"]:checked').removeAttribute('checked');
+                s.setAttribute('checked', 'checked');
+            }
+        }
 
         commentInput.addEventListener('click', () => {
             closeCommentSetting();
@@ -1324,7 +1346,7 @@ class PaPlayer {
                 document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
                 document.getElementsByTagName('body')[0].classList.remove('full');
                 this.element.classList.remove('full');
-            }else{
+            } else {
                 document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
                 document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
                 document.getElementsByTagName('body')[0].classList.add('full');
@@ -1443,13 +1465,13 @@ class PaPlayer {
         let clarityCUR = this.element.getElementsByClassName('current_clarity')[0];
         let clarityLIEL = this.element.getElementsByClassName('clarity_list')[0];
         clarityLIEL.style.display = 'none';
-        for(let i=0, l=clarityLIEL.childNodes.length; i<l; i++){
+        for (let i = 0, l = clarityLIEL.childNodes.length; i < l; i++) {
             clarityLIEL.childNodes[i].classList.remove('active');
             clarityLIEL.childNodes[i].style.display = 'none';
             clarityLIEL.childNodes[i].dataset.clarity = '';
         }
-        for(let i in clarity) {
-            if (clarityLIEL.getElementsByClassName(i).length > 0){
+        for (let i in clarity) {
+            if (clarityLIEL.getElementsByClassName(i).length > 0) {
                 clarityLIEL.getElementsByClassName(i)[0].style.display = 'block';
                 clarityLIEL.getElementsByClassName(i)[0].dataset.clarity = clarity[i];
                 !current_clarity && (current_clarity = i);
@@ -1565,7 +1587,7 @@ class PaPlayer {
     /**
      * Asynchronously read danmaku from all API endpoints
      */
-    _readAllEndpoints (endpoints, finish) {
+    _readAllEndpoints(endpoints, finish) {
         let results = [];
         let readCount = 0;
         let cbk = (i) => (err, data) => {
@@ -1630,7 +1652,7 @@ class PaPlayer {
         this.video.poster = video.pic ? video.pic : '';
         this.pause();
         this.option.video.url = video.url;
-        if(typeof this.option.video.url == 'string') {
+        if (typeof this.option.video.url == 'string') {
             this.video.src = this.option.video.url;
         }
         //safari ios 不支持 video.load() 方法 重载视频源地址
@@ -1644,7 +1666,7 @@ class PaPlayer {
         if (start_time) {
             this.setStartTime(start_time);
             this.video.currentTime = start_time;
-        }else{
+        } else {
             this.video.currentTime = 0;
         }
 
@@ -1665,7 +1687,7 @@ class PaPlayer {
             this.danIndex = 0;
             this.readDanmaku();
             this.element.classList.remove('paplayer-no-danmaku');
-        }else {
+        } else {
             this.element.classList.add('paplayer-no-danmaku');
             delete this.option.danmaku;
             this.trigger('playerReady');
@@ -1682,17 +1704,17 @@ class PaPlayer {
      * @param start_time
      */
     switchClarity(video) {
-        let start_time = this.video.currentTime, poster="";
+        let start_time = this.video.currentTime, poster = "";
 
         this.option.video.url = video.url;
-        if(typeof this.option.video.url == 'string') {
+        if (typeof this.option.video.url == 'string') {
             this.video.src = this.option.video.url;
         }
         // this.video.poster = poster;
         if (start_time > 0 && !this.ended) {
             this.setStartTime(start_time);
             this.video.currentTime = start_time;
-        }else{
+        } else {
             this.video.currentTime = 0;
         }
         this.pause();
@@ -1701,8 +1723,8 @@ class PaPlayer {
         this.trigger('playerReady');
     }
 
-    destroy(){
-        if(this.destoryed !== true){
+    destroy() {
+        if (this.destoryed !== true) {
             console.log('player_destroy');
             this.pause();
             if (this.option.hotkey) {
@@ -1713,10 +1735,10 @@ class PaPlayer {
             clearInterval(this.playedTime);
             clearInterval(this.danmakuTime);
             this.element.innerHTML = '';
-            for(let obj in this){
+            for (let obj in this) {
                 // console.log(obj, !defaultApiBackend.isDOM(this[obj]));
                 //not dom element and set to : null
-                if (!defaultApiBackend.isDOM(this[obj])){
+                if (!defaultApiBackend.isDOM(this[obj])) {
                     if (typeof this[obj] == 'object' && typeof this[obj]['destroy'] == 'function') this[obj].destroy();
                     this[obj] = null;
                 }
@@ -1730,7 +1752,7 @@ class PaPlayer {
      * try other media types
      * @constructor
      */
-    TestMediaType(){
+    TestMediaType() {
         let flvconf = {
             enableWorker: false,
             lazyLoadMaxDuration: 3 * 60,
