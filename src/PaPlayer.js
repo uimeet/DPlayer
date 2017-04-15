@@ -1245,7 +1245,7 @@ class PaPlayer {
             }
         };
 
-        let disableHide = 0;
+        let disableHide = 0, isplaying;
         const closeComment = () => {
             if (commentBox.classList.contains('paplayer-comment-box-open')) {
                 commentBox.classList.remove('paplayer-comment-box-open');
@@ -1253,9 +1253,13 @@ class PaPlayer {
                 clearInterval(disableHide);
                 this.element.classList.remove('paplayer-show-controller');
                 closeCommentSetting();
+                isplaying && this.play();
             }
         };
         const openComment = () => {
+            isplaying = false;
+            !this.video.paused && (isplaying = true);
+            this.pause();
             commentBox.classList.add('paplayer-comment-box-open');
             mask.classList.add('paplayer-mask-show');
             disableHide = setInterval(() => {
