@@ -1734,6 +1734,9 @@ class PaPlayer {
             clearTimeout(this.hideTime);
             clearInterval(this.playedTime);
             clearInterval(this.danmakuTime);
+            document.getElementsByTagName('body')[0].style.overflowY = "";
+            document.getElementsByTagName('body')[0].classList.remove('full');
+            this.element.classList.remove('full');
             this.element.innerHTML = '';
             for (let obj in this) {
                 // console.log(obj, !defaultApiBackend.isDOM(this[obj]));
