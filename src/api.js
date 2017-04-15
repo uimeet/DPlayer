@@ -13,6 +13,21 @@ const typeArr = {
     '1':'right', '6':'left', '5': 'top', '4': 'bottom'
 };
 
+
+export const color2int = function (color) {
+    var color = color.substr(1).split('');
+    color.length == 3 && (color = [color[0], color[0], color[1], color[1], color[2], color[2]]);
+    return parseInt(color.join(''), 16);
+};
+
+export const int2color = function (int) {
+    var color = parseInt(int, 10).toString(16).split('');
+    for (var i = 0, l = 6 - color.length; i < l; i++) {
+        color.unshift('0');
+    }
+    return '#' + color.join('');
+};
+
 /**
  * load xml format danmaku
  * @param fromSrc
@@ -51,7 +66,7 @@ const LoadXML = function(fromSrc){
             author: p_data[5],
             time: parseFloat(p_data[0]),
             text: docs[i].innerHTML,
-            color: '#' + (parseInt(p_data[3], 10)).toString(16),
+            color: int2color(p_data[3]),
             type: typeArr[p_data[1]],
             size: parseInt(p_data[2], 10)
         });
@@ -134,3 +149,4 @@ export const isDOM = ( typeof HTMLElement === 'object' ) ?
     function (obj) {
         return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
     };
+
