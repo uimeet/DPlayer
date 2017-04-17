@@ -1064,7 +1064,7 @@ class PaPlayer {
          */
         const danmakuIn = (text, color, type, size) => {
             if (color == '') {
-                color = '#fff'
+                color = '#ffffff'
             }
             if (type == '') {
                 type = 'right'
@@ -1075,12 +1075,14 @@ class PaPlayer {
             danWidth = danContainer.offsetWidth;
             danHeight = danContainer.offsetHeight;
             itemY = parseInt(danHeight / itemHeight);
-            let item = document.createElement(`div`);
+            let item = document.createElement(`div`), bcolor=defaultApiBackend.colorShadow(color);
             item.classList.add(`paplayer-danmaku-item`);
             item.classList.add(`paplayer-danmaku-${type}`);
+            // item.classList.add(`c${color.substr(1)}`);
             item.innerHTML = text;
             item.style.opacity = danOpacity;
             item.style.color = color;
+            item.style.textShadow = `${bcolor} 1px 0px 1px, ${bcolor} 0px 1px 1px, ${bcolor} 0px -1px 1px, ${bcolor} -1px 0px 1px`;
             item.style.fontSize = size + 'px';
             if (isMobile) {
                 item.style.fontSize = this.textScale * parseInt(size, 10) + 'px';
@@ -1628,10 +1630,10 @@ class PaPlayer {
         endpoints.push(apiurl);
 
         this._readAllEndpoints(endpoints, (results) => {
-            this.danIndex = 0;
             this.dan = [].concat.apply([], results).sort((a, b) => a.time - b.time);
             this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'none';
-            this.trigger('playerReady');
+            // this.danIndex = 0;
+            this.resetDanIndex(); //应计算当前该显示的弹幕,避免已经在播放中的视频一下子把时间点之前的所有弹幕显示出来
             // autoplay
             if (this.option.autoplay && !isMobile) {
                 this.play();
@@ -1639,6 +1641,7 @@ class PaPlayer {
             else if (isMobile) {
                 this.pause();
             }
+            this.trigger('playerReady');
         });
     }
 

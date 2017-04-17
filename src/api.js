@@ -27,6 +27,14 @@ export const int2color = function (int) {
     return '#' + color.join('');
 };
 
+export const colorShadow = function (color) {
+    var ic = color.substr(1)
+        , a = parseInt(ic.substr(0,2), 16)
+        , b = parseInt(ic.substr(2, 2), 16)
+        , c = parseInt(ic.substr(4, 2), 16)
+        ;
+    return (a+b+c) < 160 ? '#ffffff' : '#000000';
+};
 
 export const getLocal = function (key) {
     var value = window.localStorage.getItem(key);
