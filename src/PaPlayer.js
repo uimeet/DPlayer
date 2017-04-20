@@ -4,6 +4,11 @@ require('./PaPlayer.scss');
 require('./iconfont.js');
 const defaultApiBackend = require('./api.js');
 
+//flv console output set
+flvjs.LoggingControl.enableAll = false;
+flvjs.LoggingControl.enableWarn = true;
+flvjs.LoggingControl.enableError = true;
+
 let index = 0;
 
 class PaPlayer {
@@ -47,6 +52,9 @@ class PaPlayer {
             this.option.autoplay = false;
         }
 
+        let plset_name = 'paplayer_set';
+        let plset = defaultApiBackend.getLocal(plset_name) || {};
+
         /*
          default options
          @clarity //当前播放的视频清晰度,HD|SD|LD
@@ -60,8 +68,8 @@ class PaPlayer {
             element: document.getElementsByClassName('paplayer')[0],
             autoplay: false,
             theme: '#b7daff',
-            loop: Boolean(localStorage.getItem('paplayer-loop') == "true" ? true : false),
-            showdan: Boolean(localStorage.getItem('paplayer-showdan') == "false" ? false : true),
+            loop: Boolean(plset['loop'] || false),
+            showdan: Boolean(plset['showdan'] || false),
             // lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
             lang: 'zh',
             screenshot: false,
@@ -344,9 +352,6 @@ class PaPlayer {
                 <div class="paplayer-menu-item close_menu"><span class="paplayer-menu-label"><a href="javascript:;">${getTran('Close Menu')}</a></span></div>
             </div>
         `;
-
-        let plset_name = 'paplayer_set';
-        let plset = defaultApiBackend.getLocal(plset_name) || {};
 
         // arrow style
         var arrow = this.element.offsetWidth <= 500;
@@ -688,7 +693,7 @@ class PaPlayer {
         /***
          * setting
          */
-        let danOpacity = localStorage.getItem('PaPlayer-opacity') || 0.7;
+        let danOpacity = plset['opacity'] || 0.7;
         const settingHTML = {
             'original': `
                     <div class="paplayer-setting-item paplayer-setting-speed" style="display: none;">
@@ -791,7 +796,8 @@ class PaPlayer {
                     loop = false;
                     this.video.loop = loop;
                 }
-                localStorage.setItem('paplayer-loop', loop);
+                plset['loop'] = loop;
+                defaultApiBackend.setLocal(plset_name, plset);
                 closeSetting();
             });
 
@@ -832,7 +838,8 @@ class PaPlayer {
                         this.itemDemo = this.element.getElementsByClassName('paplayer-danmaku-item')[0];
                     }
                 }
-                localStorage.setItem('paplayer-showdan', showdan);
+                plset['showdan'] = showdan;
+                defaultApiBackend.setLocal(plset_name, plset);
                 closeSetting();
             });
 
@@ -870,7 +877,8 @@ class PaPlayer {
                         items[i].style.opacity = percentage;
                     }
                     danOpacity = percentage;
-                    localStorage.setItem('PaPlayer-opacity', danOpacity);
+                    plset['opacity'] = danOpacity;
+                    defaultApiBackend.setLocal(plset_name, plset);
                 };
                 const danmakuUp = () => {
                     document.removeEventListener('mouseup', danmakuUp);
@@ -889,7 +897,8 @@ class PaPlayer {
                         items[i].style.opacity = percentage;
                     }
                     danOpacity = percentage;
-                    localStorage.setItem('PaPlayer-opacity', danOpacity);
+                    plset['opacity'] = danOpacity;
+                    defaultApiBackend.setLocal(plset_name, plset);
                 });
                 danmakuBarWrapWrap.addEventListener('mousedown', () => {
                     document.addEventListener('mousemove', danmakuMove);
@@ -1767,6 +1776,7 @@ class PaPlayer {
             seekParamEnd: 'end',
             reuseRedirectedURL: true
         };
+
         if (this.hls) {
             this.hls.destroy();
             delete this.hls;
@@ -1775,6 +1785,7 @@ class PaPlayer {
             this.flvPlayer.destroy();
             delete this.flvPlayer;
         }
+
         // url is json object for FLV
         if (typeof this.option.video.url == 'object' && flvjs.isSupported()) {
             // console.log('url is object, use flv.js');
