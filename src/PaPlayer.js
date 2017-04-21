@@ -69,7 +69,7 @@ class PaPlayer {
             autoplay: false,
             theme: '#b7daff',
             loop: Boolean(plset['loop'] || false),
-            showdan: Boolean(plset['showdan'] || false),
+            showdan: Boolean(plset['showdan'] || true),
             // lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
             lang: 'zh',
             screenshot: false,
