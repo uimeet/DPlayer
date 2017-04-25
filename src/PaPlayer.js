@@ -955,11 +955,12 @@ class PaPlayer {
         this.ended = false;
         this.video.addEventListener('ended', () => {
             this.updateBar('played', 1, 'width');
-            this.trigger('ended');
             if (!loop) {
                 this.ended = true;
                 this.pause();
+                this.exitFull();
             }
+            this.trigger('ended');
         });
 
         this.video.addEventListener('play', () => {
@@ -1352,16 +1353,31 @@ class PaPlayer {
 
         let isFull = false;
 
+        this.exitFull = () => {
+            document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
+            document.getElementsByTagName('body')[0].classList.remove('full');
+            this.element.classList.remove('full');
+        };
+
+        this.full = () => {
+            document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
+            document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
+            document.getElementsByTagName('body')[0].classList.add('full');
+            this.element.classList.add('full');
+        };
+
         this.element.getElementsByClassName('paplayer-full-icon')[0].addEventListener('click', () => {
             if (isFull) {
-                document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
-                document.getElementsByTagName('body')[0].classList.remove('full');
-                this.element.classList.remove('full');
+                this.exitFull();
+                // document.getElementsByTagName('body')[0].style.overflowY = document.getElementsByTagName('body')[0].dataset.oy;
+                // document.getElementsByTagName('body')[0].classList.remove('full');
+                // this.element.classList.remove('full');
             } else {
-                document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
-                document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
-                document.getElementsByTagName('body')[0].classList.add('full');
-                this.element.classList.add('full');
+                this.full();
+                // document.getElementsByTagName('body')[0].dataset.oy = document.getElementsByTagName('body')[0].style.overflowY;
+                // document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
+                // document.getElementsByTagName('body')[0].classList.add('full');
+                // this.element.classList.add('full');
             }
             isFull = !isFull;
             resetAnimation();
