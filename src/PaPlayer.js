@@ -39,7 +39,7 @@ class PaPlayer {
             return `
                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" height="100%" version="1.1" viewBox="${svg[type][0]}" width="100%">
                     <use xlink:href="#paplayer-${type}"></use>
-                    <path class="paplayer-fill" d="${svg[type][1]}" id="paplayer-${type}" style="${svg[type][2]||''}"></path>
+                    <path class="paplayer-fill" d="${svg[type][1]}" id="paplayer-${type}" style="${svg[type][2] || ''}"></path>
                 </svg>
             `;
         };
@@ -70,6 +70,7 @@ class PaPlayer {
             theme: '#b7daff',
             loop: Boolean(plset['loop'] || false),
             showdan: Boolean(plset['showdan'] || true),
+            danmax: 25, //同屏显示最多弹幕数，避免弹幕一时间加载过多死屏问题
             // lang: navigator.language.indexOf('zh') !== -1 ? 'zh' : 'en',
             lang: 'zh',
             screenshot: false,
@@ -92,6 +93,8 @@ class PaPlayer {
                 this.option[defaultKey] = defaultOption[defaultKey];
             }
         }
+
+        this.danCount = 0;
 
         const baseUrl = window.location.href.split('#')[0];
 
@@ -185,9 +188,6 @@ class PaPlayer {
         this.element = this.option.element;
         if (!this.option.danmaku) {
             this.element.classList.add('paplayer-no-danmaku');
-        }
-        if (this.option.preload == 'none') {
-            this.element.classList.add('paplayer-hide-controller');
         }
 
         this.element.innerHTML = `
@@ -364,6 +364,57 @@ class PaPlayer {
         // get this video object
         this.video = this.element.getElementsByClassName('paplayer-video')[0];
 
+        const current_clarity = this.element.getElementsByClassName('current_clarity')[0];
+        const clarity_list = this.element.getElementsByClassName('clarity_list')[0];
+        let clarityTimer, clarityCall = this.option.clarityCall;
+
+        this.showClaritySet = () => {
+            clearTimeout(clarityTimer);
+            clarity_list.style.display = "block";
+        };
+        this.hideClaritySet = () => {
+            clarity_list.style.display = "none";
+            clearTimeout(clarityTimer);
+        };
+
+        current_clarity.addEventListener('click', () => {
+            if (clarity_list.style.display != 'block') {
+                this.showClaritySet();
+                clarityTimer = setTimeout(() => {
+                    this.hideClaritySet();
+                }, 5000);
+            } else {
+                this.hideClaritySet();
+            }
+        });
+
+        clarity_list.addEventListener('mouseenter', () => {
+            clarityTimer && clearTimeout(clarityTimer);
+        });
+
+        clarity_list.addEventListener('mouseleave', () => {
+            clarityTimer = setTimeout(() => {
+                this.hideClaritySet();
+            }, 5000);
+        });
+
+        for (let i = 0, l = clarity_list.childNodes.length; i < l; i++) {
+            clarity_list.childNodes[i].addEventListener('click', function () {
+                let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
+
+                if (el.classList.contains('active')) {
+                    return;
+                }
+                clarity_list.style.display = "none";
+                clarityCall.call(this, clarity, el);
+            });
+        }
+
+        if (this.option.preload == 'none') {
+            this.element.classList.add('paplayer-hide-controller');
+            this.hideClaritySet();
+        }
+
         // try other supported media type
         this.TestMediaType();
 
@@ -399,10 +450,10 @@ class PaPlayer {
             const toggleController = () => {
                 if (this.element.classList.contains('paplayer-hide-controller')) {
                     this.element.classList.remove('paplayer-hide-controller');
-                    closeClaritySet();
                 }
                 else {
                     this.element.classList.add('paplayer-hide-controller');
+                    this.hideClaritySet();
                 }
             };
             videoWrap.addEventListener('click', toggleController);
@@ -512,6 +563,22 @@ class PaPlayer {
 
         };
 
+        this.setDanIn = () => {
+            this.resetDanIndex();
+            this.danmakuTime = setInterval(() => {
+                if (this.video.readyState != 4 || !bufferingDetected) {
+                    return;
+                }
+                let item = this.dan[this.danIndex];
+                while (item && this.video.currentTime >= parseFloat(item.time)) {
+                    if (this.danCount < this.option.danmax) {
+                        danmakuIn(item.text, item.color, item.type, item.size);
+                    }
+                    item = this.dan[++this.danIndex];
+                }
+            }, 0);
+        };
+
         this.setTime = () => {
             this.playedTime = setInterval(() => {
                 // whether the video is buffering
@@ -549,18 +616,9 @@ class PaPlayer {
                 this.element.getElementsByClassName('paplayer-ptime')[0].innerHTML = secondToTime(this.video.currentTime);
                 this.trigger('playing');
             }, 200);
+
             if (this.option.danmaku && showdan) {
-                this.danmakuTime = setInterval(() => {
-                    if (this.video.readyState != 4 || !bufferingDetected) {
-                        return;
-                    }
-                    let item = this.dan[this.danIndex];
-                    while (item && this.video.currentTime >= parseFloat(item.time)) {
-                        // console.log(this.video.currentTime, item.time);
-                        danmakuIn(item.text, item.color, item.type, item.size);
-                        item = this.dan[++this.danIndex];
-                    }
-                }, 100);
+                this.setDanIn();
             }
         };
         this.clearTime = () => {
@@ -681,7 +739,7 @@ class PaPlayer {
                         this.element.classList.add('paplayer-hide-controller');
                         closeSetting();
                         closeComment();
-                        closeClaritySet();
+                        this.hideClaritySet();
                     }
                 }, 2000);
             };
@@ -812,17 +870,7 @@ class PaPlayer {
                 if (showDanToggle.checked) {
                     showdan = true;
                     if (this.option.danmaku) {
-                        this.resetDanIndex();
-                        this.danmakuTime = setInterval(() => {
-                            if (this.video.readyState != 4 || !bufferingDetected) {
-                                return;
-                            }
-                            let item = this.dan[this.danIndex];
-                            while (item && this.video.currentTime >= parseFloat(item.time)) {
-                                danmakuIn(item.text, item.color, item.type, item.size);
-                                item = this.dan[++this.danIndex];
-                            }
-                        }, 100);
+                        this.setDanIn();
                     }
                 }
                 else {
@@ -983,7 +1031,7 @@ class PaPlayer {
                 clearTimeout(this.hideTime);
                 this.hideTime = setTimeout(() => {
                     this.element.classList.add('paplayer-hide-controller');
-                    this.closeClaritySet();
+                    this.hideClaritySet();
                 }, 2000);
 
             }
@@ -1085,7 +1133,7 @@ class PaPlayer {
             danWidth = danContainer.offsetWidth;
             danHeight = danContainer.offsetHeight;
             itemY = parseInt(danHeight / itemHeight);
-            let item = document.createElement(`div`), bcolor=defaultApiBackend.colorShadow(color);
+            let item = document.createElement(`div`), bcolor = defaultApiBackend.colorShadow(color);
             item.classList.add(`paplayer-danmaku-item`);
             item.classList.add(`paplayer-danmaku-${type}`);
             // item.classList.add(`c${color.substr(1)}`);
@@ -1099,6 +1147,7 @@ class PaPlayer {
             }
             item.addEventListener('animationend', () => {
                 danContainer.removeChild(item);
+                this.danCount--;
             });
 
             // measure
@@ -1128,7 +1177,7 @@ class PaPlayer {
 
             // move
             item.classList.add(`paplayer-danmaku-move`);
-
+            this.danCount++;
             return item;
         };
 
@@ -1158,42 +1207,6 @@ class PaPlayer {
         const commentTextIcon = commentSettingIcon.getElementsByClassName('paplayer-fill')[0];
         const commentSettingBox = this.element.getElementsByClassName('paplayer-comment-setting-box')[0];
         const commentSendIcon = this.element.getElementsByClassName('paplayer-send-icon')[0];
-
-
-        const current_clarity = this.element.getElementsByClassName('current_clarity')[0];
-        const clarity_list = this.element.getElementsByClassName('clarity_list')[0];
-        let clarityTimer, clarityCall = this.option.clarityCall;
-
-        current_clarity.addEventListener('click', () => {
-            if (clarity_list.style.display != 'block') {
-                clarity_list.style.display = "block";
-                clarityTimer = setTimeout(function () {
-                    clarity_list.style.display = "none";
-                }, 5000);
-            } else {
-                clarity_list.style.display = "none";
-            }
-        });
-        clarity_list.addEventListener('mouseenter', () => {
-            clarityTimer && clearTimeout(clarityTimer);
-        });
-        clarity_list.addEventListener('mouseleave', () => {
-            clarityTimer = setTimeout(function () {
-                clarity_list.style.display = "none";
-            }, 5000);
-        });
-
-        for (let i = 0, l = clarity_list.childNodes.length; i < l; i++) {
-            clarity_list.childNodes[i].addEventListener('click', function () {
-                let el = this, p = el.parentNode, s = p.childNodes, clarity = el.dataset.clarity;
-
-                if (el.classList.contains('active')) {
-                    return;
-                }
-                clarity_list.style.display = "none";
-                clarityCall.call(this, clarity, el);
-            });
-        }
 
         const htmlEncode = (str) => {
             return str.replace(/&/g, "&amp;")
@@ -1272,10 +1285,6 @@ class PaPlayer {
             }, 1000);
             this.element.classList.add('paplayer-show-controller');
         };
-        const closeClaritySet = () => {
-            clarity_list.style.display = "none";
-        };
-        this.closeClaritySet = closeClaritySet;
 
         mask.addEventListener('click', () => {
             closeComment();
@@ -1549,7 +1558,7 @@ class PaPlayer {
             clearTimeout(this.hideTime);
             this.hideTime = setTimeout(() => {
                 this.element.classList.add('paplayer-hide-controller');
-                this.closeClaritySet();
+                this.hideClaritySet();
             }, 2000);
 
 
@@ -1655,6 +1664,7 @@ class PaPlayer {
         endpoints.push(apiurl);
 
         this._readAllEndpoints(endpoints, (results) => {
+            this.danCount = 0;
             this.dan = [].concat.apply([], results).sort((a, b) => a.time - b.time);
             this.element.getElementsByClassName('paplayer-danloading')[0].style.display = 'none';
             // this.danIndex = 0;
